@@ -125,6 +125,20 @@ public:
 		ShapeDefFuncsDeclaration
 	};
 
+	class Hexagon
+	{
+	public:
+		glm::vec2 A, B, C, D, E, F;
+
+		Hexagon();
+		Hexagon(float x1, float y1, float x2, float y2, float x3, float y3,
+			float x4, float y4, float x5, float y5, float x6, float y6);
+		Hexagon(const glm::vec2& aA, const glm::vec2& B, const glm::vec2& C,
+			const glm::vec2& D, const glm::vec2& E, const glm::vec2& F);
+
+		ShapeDefFuncsDeclaration
+	};
+
 	class Polygon
 	{
 	public:
@@ -146,6 +160,22 @@ public:
 		Circle();
 		Circle(float Ox, float Oy, float r);
 		Circle(const glm::vec2& O, float r);
+
+		ShapeDefFuncsDeclaration
+	};
+
+	class ScaleCir
+	{
+	public:
+
+		glm::vec2 O, scale;
+		float r;
+
+		ScaleCir();
+		ScaleCir(float Ox, float Oy, float r, float scaleX, float scaleY);
+		ScaleCir(const glm::vec2& O, float r, float scaleX, float scaleY);
+		ScaleCir(float Ox, float Oy, float r, const glm::vec2& scale);
+		ScaleCir(const glm::vec2& O, float r, const glm::vec2& scale);
 
 		ShapeDefFuncsDeclaration
 	};
