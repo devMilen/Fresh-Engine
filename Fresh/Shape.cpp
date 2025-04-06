@@ -408,6 +408,38 @@ std::vector<Shape::Line> Shape::AABB::PToLineVec() {
 
 #pragma region Pentagon
 Shape::Pentagon::Pentagon() : A(0.0f, 0.0f), B(0.0f, 0.0f), C(0.0f, 0.0f), D(0.0f, 0.0f), E(0.0f, 0.0f) {}
+Shape::Pentagon::Pentagon(float x, float y, float pivotX, float pivotY) : A(x, y)
+{
+    const float degreesJump = 360.0f / 5.0f;
+    B = RotatedP(A, pivotX, pivotY, 1*degreesJump);
+    C = RotatedP(A, pivotX, pivotY, 2 * degreesJump);
+    D = RotatedP(A, pivotX, pivotY, 3 * degreesJump);
+    E = RotatedP(A, pivotX, pivotY, 4 * degreesJump);
+}
+Shape::Pentagon::Pentagon(const glm::vec2& A, const glm::vec2& pivot) : A(A)
+{
+    const float degreesJump = 360.0f / 5.0f;
+    B = RotatedP(A, pivot, 1 * degreesJump);
+    C = RotatedP(A, pivot, 2 * degreesJump);
+    D = RotatedP(A, pivot, 3 * degreesJump);
+    E = RotatedP(A, pivot, 4 * degreesJump);
+}
+Shape::Pentagon::Pentagon(float x, float y, const glm::vec2& pivot) : A(x, y)
+{
+    const float degreesJump = 360.0f / 5.0f;
+    B = RotatedP(A, pivot, 1 * degreesJump);
+    C = RotatedP(A, pivot, 2 * degreesJump);
+    D = RotatedP(A, pivot, 3 * degreesJump);
+    E = RotatedP(A, pivot, 4 * degreesJump);
+}
+Shape::Pentagon::Pentagon(const glm::vec2& A, float pivotX, float pivotY) : A(A)
+{
+    const float degreesJump = 360.0f / 5.0f;
+    B = RotatedP(A, pivotX, pivotY, 1 * degreesJump);
+    C = RotatedP(A, pivotX, pivotY, 2 * degreesJump);
+    D = RotatedP(A, pivotX, pivotY, 3 * degreesJump);
+    E = RotatedP(A, pivotX, pivotY, 4 * degreesJump);
+}
 Shape::Pentagon::Pentagon(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C, const glm::vec2& D, const glm::vec2& E)
     : A(A), B(B), C(C), D(D), E(E) {
 }

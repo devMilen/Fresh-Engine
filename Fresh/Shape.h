@@ -119,8 +119,12 @@ public:
 		glm::vec2 A, B, C, D, E;
 
 		Pentagon();
+		Pentagon(float x, float y, float pivotX, float pivotY);
+		Pentagon(const glm::vec2& A, const glm::vec2& pivot);
+		Pentagon(float x, float y, const glm::vec2& pivot);
+		Pentagon(const glm::vec2& A, float pivotX, float pivotY);
 		Pentagon(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float x5, float y5);
-		Pentagon(const glm::vec2& aA, const glm::vec2& B, const glm::vec2& C, const glm::vec2& D, const glm::vec2& E);
+		Pentagon(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C, const glm::vec2& D, const glm::vec2& E);
 
 		ShapeDefFuncsDeclaration
 	};
@@ -131,6 +135,8 @@ public:
 		glm::vec2 A, B, C, D, E, F;
 
 		Hexagon();
+		Hexagon(float x1, float y1, float maxR);
+		Hexagon(const glm::vec2& A, float maxR);
 		Hexagon(float x1, float y1, float x2, float y2, float x3, float y3,
 			float x4, float y4, float x5, float y5, float x6, float y6);
 		Hexagon(const glm::vec2& aA, const glm::vec2& B, const glm::vec2& C,
@@ -148,6 +154,7 @@ public:
 		Polygon(const std::vector<float>& aPoints);
 		Polygon(const std::vector<glm::vec2>& aPoints);
 
+		std::vector<Line> SnakePToLineVec();
 		ShapeDefFuncsDeclaration
 	};
 
