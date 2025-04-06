@@ -4,7 +4,7 @@
 #include <assert.h>
 #include "Sprite.h"
 
-#define CREATEWINDOW(windowWidth1, windowHeight1) GLFWwindow* window = ::CreateWindow(windowWidth1, windowHeight1, "name"); 
+#define CREATEWINDOW(windowWidth1, windowHeight1) GLFWwindow* window = CreateWindow(windowWidth1, windowHeight1, "name"); 
 #define MAIN \
 int main() {\
     glfwGetWindowSize(window, &windowWidth, &windowHeight);\

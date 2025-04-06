@@ -41,6 +41,13 @@ public:
 
 		void Select();
 		void AssignPointer(unsigned int location, unsigned int flPerVertex, unsigned int stride, void* beginOffset);
+		template<size_t size> void UpdateData(const std::array<float, size>& newVertices, unsigned int startOffset,
+			unsigned int location = 0, unsigned int flPerVertex = 2, unsigned int stride = 2 * sizeof(float), void* beginOffset = (void*)0) 
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, id);
+			glBufferSubData(GL_ARRAY_BUFFER, startOffset, newVertices.size() * sizeof(float), newVertices.data());
+			AssignPointer(location, flPerVertex, stride, beginOffset);
+		}
 	};
 
 	class IndexBuffer
