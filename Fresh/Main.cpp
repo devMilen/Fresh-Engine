@@ -7,6 +7,8 @@
 #include <iostream>
 CREATEWINDOW(800, 800) MAIN
 
+//TODO: triangle and a box independantly and test each change function and collision
+
 Sprite sprite, sprite2;
 Shape::Triangle tri(300, 200, 300, 700, 700, 700), 
                 tri2(300, 200, 400, 600, 700, 700);

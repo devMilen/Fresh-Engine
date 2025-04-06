@@ -1,4 +1,3 @@
-//import glfwGetKey
 #pragma once
 #include "glfw3.h"
 #include <bitset>
@@ -34,4 +33,5 @@ public:
 	static void WaitInput();
 
 	static bool IsKeyPressed(int key);
+	static int GetKeyAction(GLFWwindow* window, int key);
 };

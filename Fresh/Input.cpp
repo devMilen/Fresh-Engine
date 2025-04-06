@@ -17,6 +17,12 @@ bool Input::IsKeyPressed(int key) {
 		return isNumberPressed.test(key - GLFW_KEY_0);
 	else return specialKeyForIsPressed.at(key);
 }
+int Input::GetKeyAction(GLFWwindow* window, int key) {
+	if (key >= GLFW_KEY_A && key <= GLFW_KEY_Z)
+		return glfwGetKey(window, key - GLFW_KEY_A);
+	else if (key >= GLFW_KEY_1 && key <= GLFW_KEY_9)
+		return glfwGetKey(window, key - GLFW_KEY_0);
+}
 
 void Input::OnKeyInput(GLFWwindow* window, int key, int scancode, int action, int mods)
 {

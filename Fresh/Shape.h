@@ -1,3 +1,4 @@
+//returning vectors by const&
 #pragma once
 #include "glew.h"
 #include "glfw3.h"
@@ -91,7 +92,8 @@ public:
 		glm::vec2 A, B, C, D;
 
 		Box();
-		Box(const glm::vec2 A, const glm::vec2 B, const glm::vec2 C, const glm::vec2 D);
+		Box(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
+		Box(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C, const glm::vec2& D);
 
 		ShapeDefFuncsDeclaration
 	};
@@ -102,7 +104,8 @@ public:
 		glm::vec2 A, B;
 
 		AABB();
-		AABB(const glm::vec2 A, const glm::vec2 B);
+		AABB(float x1, float y1, float x2, float y2);
+		AABB(const glm::vec2& A, const glm::vec2& B);
 
 		float Width();
 		float Height();
@@ -116,7 +119,8 @@ public:
 		glm::vec2 A, B, C, D, E;
 
 		Pentagon();
-		Pentagon(const glm::vec2 aA, const glm::vec2 B, const glm::vec2 C, const glm::vec2 D, const glm::vec2 E);
+		Pentagon(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float x5, float y5);
+		Pentagon(const glm::vec2& aA, const glm::vec2& B, const glm::vec2& C, const glm::vec2& D, const glm::vec2& E);
 
 		ShapeDefFuncsDeclaration
 	};
@@ -127,6 +131,7 @@ public:
 		std::vector<glm::vec2> points;
 
 		Polygon();
+		Polygon(const std::vector<float>& aPoints);
 		Polygon(const std::vector<glm::vec2>& aPoints);
 
 		ShapeDefFuncsDeclaration
@@ -139,6 +144,7 @@ public:
 		float r;
 
 		Circle();
+		Circle(float Ox, float Oy, float r);
 		Circle(const glm::vec2& O, float r);
 
 		ShapeDefFuncsDeclaration
@@ -151,6 +157,7 @@ public:
 		float rSum;
 
 		Ellipse();
+		Ellipse(float F1x, float F1y, float F2x, float F2y, float rSum);
 		Ellipse(const glm::vec2& F1, const glm::vec2& F2, float rSum);
 
 		ShapeDefFuncsDeclaration
