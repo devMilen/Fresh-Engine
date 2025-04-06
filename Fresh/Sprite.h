@@ -27,10 +27,10 @@ public:
         pLoc(pLoc), pflPerVertex(pflPerVertex), pstride(pstride), pbeginOffset(pbeginOffset),
         pLoc2(pLoc2), pflPerVertex2(pflPerVertex2), pstride2(pstride2), pbeginOffset2(pbeginOffset2), indicesSize(indices.size())
     {
-        glVertexAttribPointer(pLoc, pflPerVertex, GL_FLOAT, false, pstride * sizeof(float), (void*)pbeginOffset);
+        glVertexAttribPointer(pLoc, pflPerVertex, GL_FLOAT, false, pstride * sizeof(float), (void*)(void*)(pbeginOffset * sizeof(float)));
         glEnableVertexAttribArray(pLoc);
 
-        glVertexAttribPointer(pLoc2, pflPerVertex2, GL_FLOAT, false, pstride2 * sizeof(float), (void*)pbeginOffset2);
+        glVertexAttribPointer(pLoc2, pflPerVertex2, GL_FLOAT, false, pstride2 * sizeof(float), (void*)(void*)(pbeginOffset2 * sizeof(float)));
         glEnableVertexAttribArray(pLoc2);
     }
 
@@ -43,7 +43,7 @@ public:
         pLoc(pLoc), pflPerVertex(pflPerVertex), pstride(pstride), pbeginOffset(pbeginOffset),
         pLoc2(0), pflPerVertex2(0), pstride2(0), pbeginOffset2(0), indicesSize(0)
     {
-        glVertexAttribPointer(pLoc, pflPerVertex, GL_FLOAT, false, pstride * sizeof(float), (void*)pbeginOffset);
+        glVertexAttribPointer(pLoc, pflPerVertex, GL_FLOAT, false, pstride * sizeof(float), (void*)(pbeginOffset * sizeof(float)));
         glEnableVertexAttribArray(pLoc);
     }
 

@@ -58,8 +58,8 @@ GL::ShaderProgram::ShaderProgram(const char* vertexShader, const char* fragmentS
 
 	glUseProgram(id);
 
-	glDeleteProgram(vertexShaderID);
-	glDeleteProgram(fragmentShaderID);
+	glDeleteShader(vertexShaderID);
+	glDeleteShader(fragmentShaderID);
 }
 
 bool GL::ShaderProgram::HaveShadersCompiled(unsigned int shaderidToCheck)
