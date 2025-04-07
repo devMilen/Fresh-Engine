@@ -22,6 +22,7 @@ int Input::GetKeyAction(GLFWwindow* window, int key) {
 		return glfwGetKey(window, key - GLFW_KEY_A);
 	else if (key >= GLFW_KEY_1 && key <= GLFW_KEY_9)
 		return glfwGetKey(window, key - GLFW_KEY_0);
+	else return glfwGetKey(window, key);
 }
 
 void Input::OnKeyInput(GLFWwindow* window, int key, int scancode, int action, int mods)

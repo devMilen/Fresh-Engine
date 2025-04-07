@@ -26,9 +26,7 @@ void Scale(float scaleX, float scaleY);\
 void Scale(float scaleX, float scaleY, const glm::vec2& pivot);\
 void Scale(float scaleX, float scaleY, float pivotX, float pivotY);\
 \
-std::vector<glm::vec2> PToListVec();\
-\
-std::vector<Line> PToLineVec();
+std::vector<glm::vec2> PToListVec();
 
 class Shape
 {
@@ -47,19 +45,19 @@ public:
 	static glm::vec2 ScaledP(const glm::vec2& p, float pivotX, float pivotY, float scaleX, float scaleY);
 	static glm::vec2 ScaledP(const glm::vec2& p, float pivotX, float pivotY, const glm::vec2& scale);
 #pragma endregion
+	enum Type {
+		TypeNone = 0, TypeDef = 1, TypeLine = 2, TypeTriangle = 3,
+		TypeBox = 4, TypePentagon = 5, TypeHexagon = 6, TypeAABB = 7,
+		TypePolygon = 8, TypeCircle = 9, TypeScaleCir = 10
+	};
 
-	class Line
-	{
-	public:
-		glm::vec2 A, B;
-
-		Line();
-		Line(const glm::vec2& A, const glm::vec2& B);
-		Line(float x1, float y1, float x2, float y2);
+	class Def {
+		virtual ~Def() = default;
 
 		void Move(const glm::vec2& v); 
 		void Move(float x, float y); 
-		glm::vec2 Center(); 
+		
+		glm::vec2 Center() const; 
 		
 		void Rotate(const glm::vec2& pivot, float degrees); 
 		void Rotate(float pivotX, float pivotY, float degrees); 
@@ -72,7 +70,19 @@ public:
 		void Scale(float scaleX, float scaleY, const glm::vec2& pivot); 
 		void Scale(float scaleX, float scaleY, float pivotX, float pivotY); 
 		
-		std::vector<glm::vec2> PToListVec(); 
+		virtual Type Type() const = 0;
+		virtual std::vector<glm::vec2> GetPointList() const = 0; 
+		virtual void SetPointList(const std::vector<glm::vec2>& newPoints) = 0; 
+	};
+
+	class Line
+	{
+	public:
+		glm::vec2 A, B;
+
+		Line();
+		Line(const glm::vec2& A, const glm::vec2& B);
+		Line(float x1, float y1, float x2, float y2);
 	};
 
 	class Triangle
@@ -157,7 +167,6 @@ public:
 		Polygon(const std::vector<float>& aPoints);
 		Polygon(const std::vector<glm::vec2>& aPoints);
 
-		std::vector<Line> SnakePToLineVec();
 		ShapeDefFuncsDeclaration
 	};
 

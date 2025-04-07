@@ -47,4 +47,9 @@ public:
 
     void RenderTri();
     void RenderTri(float r, float g, float b, float a);
+
+    void RenderLine(float width = 1.0f);
+    void RenderLine(float r, float g, float b, float a, float width = 1.0f);
+    void RenderLineS(float width = 1.0f);
+    void RenderLineS(float r, float g, float b, float a, float width = 1.0f);
 };

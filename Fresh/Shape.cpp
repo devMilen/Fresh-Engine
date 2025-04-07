@@ -134,73 +134,73 @@ glm::vec2 Shape::ScaledP(const glm::vec2& p, float pivotX, float pivotY, const g
 }
 #pragma endregion
 
-#pragma region Line
+//#pragma region Line
 Shape::Line::Line() : A(0.0f, 0.0f), B(0.0f, 0.0f) {}
 
 Shape::Line::Line(const glm::vec2& A, const glm::vec2& B) : A(A), B(B) {}
 
 Shape::Line::Line(float x1, float y1, float x2, float y2) : A(x1, y1), B(x2, y2) {}
-
-void Shape::Line::Move(const glm::vec2& v) {
-    A += v;
-    B += v;
-}
-
-void Shape::Line::Move(float x, float y) {
-    A.x += x; A.y += y;
-    B.x += x; B.y += y;
-}
-
-glm::vec2 Shape::Line::Center() {
-    return (A + B) * 0.5f;
-}
-
-void Shape::Line::Rotate(const glm::vec2& pivot, float degrees) {
-    A = RotatedP(A, pivot, degrees);
-    B = RotatedP(B, pivot, degrees);
-}
-
-void Shape::Line::Rotate(float pivotX, float pivotY, float degrees) {
-    Rotate(glm::vec2(pivotX, pivotY), degrees);
-}
-
-void Shape::Line::Rotate(float degrees) {
-    glm::vec2 center = Center();
-    Rotate(center, degrees);
-}
-
-void Shape::Line::Scale(const glm::vec2& scaler) {
-    glm::vec2 center = Center();
-    A = ScaledP(A, center, scaler);
-    B = ScaledP(B, center, scaler);
-}
-
-void Shape::Line::Scale(const glm::vec2& scaler, const glm::vec2& pivot) {
-    A = ScaledP(A, pivot, scaler);
-    B = ScaledP(B, pivot, scaler);
-}
-
-void Shape::Line::Scale(const glm::vec2& scaler, float pivotX, float pivotY) {
-    Scale(scaler, glm::vec2(pivotX, pivotY));
-}
-
-void Shape::Line::Scale(float scaleX, float scaleY) {
-    Scale(glm::vec2(scaleX, scaleY));
-}
-
-void Shape::Line::Scale(float scaleX, float scaleY, const glm::vec2& pivot) {
-    Scale(glm::vec2(scaleX, scaleY), pivot);
-}
-
-void Shape::Line::Scale(float scaleX, float scaleY, float pivotX, float pivotY) {
-    Scale(glm::vec2(scaleX, scaleY), glm::vec2(pivotX, pivotY));
-}
-
-std::vector<glm::vec2> Shape::Line::PToListVec() {
-    return { A, B };
-}
-
-#pragma endregion
+//
+//void Shape::Line::Move(const glm::vec2& v) {
+//    A += v;
+//    B += v;
+//}
+//
+//void Shape::Line::Move(float x, float y) {
+//    A.x += x; A.y += y;
+//    B.x += x; B.y += y;
+//}
+//
+//glm::vec2 Shape::Line::Center() {
+//    return (A + B) * 0.5f;
+//}
+//
+//void Shape::Line::Rotate(const glm::vec2& pivot, float degrees) {
+//    A = RotatedP(A, pivot, degrees);
+//    B = RotatedP(B, pivot, degrees);
+//}
+//
+//void Shape::Line::Rotate(float pivotX, float pivotY, float degrees) {
+//    Rotate(glm::vec2(pivotX, pivotY), degrees);
+//}
+//
+//void Shape::Line::Rotate(float degrees) {
+//    glm::vec2 center = Center();
+//    Rotate(center, degrees);
+//}
+//
+//void Shape::Line::Scale(const glm::vec2& scaler) {
+//    glm::vec2 center = Center();
+//    A = ScaledP(A, center, scaler);
+//    B = ScaledP(B, center, scaler);
+//}
+//
+//void Shape::Line::Scale(const glm::vec2& scaler, const glm::vec2& pivot) {
+//    A = ScaledP(A, pivot, scaler);
+//    B = ScaledP(B, pivot, scaler);
+//}
+//
+//void Shape::Line::Scale(const glm::vec2& scaler, float pivotX, float pivotY) {
+//    Scale(scaler, glm::vec2(pivotX, pivotY));
+//}
+//
+//void Shape::Line::Scale(float scaleX, float scaleY) {
+//    Scale(glm::vec2(scaleX, scaleY));
+//}
+//
+//void Shape::Line::Scale(float scaleX, float scaleY, const glm::vec2& pivot) {
+//    Scale(glm::vec2(scaleX, scaleY), pivot);
+//}
+//
+//void Shape::Line::Scale(float scaleX, float scaleY, float pivotX, float pivotY) {
+//    Scale(glm::vec2(scaleX, scaleY), glm::vec2(pivotX, pivotY));
+//}
+//
+//std::vector<glm::vec2> Shape::Line::PToListVec() {
+//    return { A, B };
+//}
+//
+//#pragma endregion
 
 #pragma region Triangle
 Shape::Triangle::Triangle() : A(0.0f, 0.0f), B(0.0f, 0.0f), C(0.0f, 0.0f) {}
@@ -261,9 +261,6 @@ void Shape::Triangle::Scale(float scaleX, float scaleY, float pivotX, float pivo
 
 std::vector<glm::vec2> Shape::Triangle::PToListVec() {
     return { A, B, C };
-}
-std::vector<Shape::Line> Shape::Triangle::PToLineVec() {
-    return { Shape::Line(A, B), Shape::Line(B, C), Shape::Line(C, A) };
 }
 #pragma endregion
 
@@ -334,9 +331,6 @@ void Shape::Box::Scale(float scaleX, float scaleY, float pivotX, float pivotY) {
 std::vector<glm::vec2> Shape::Box::PToListVec() {
     return { A, B, C, D };
 }
-std::vector<Shape::Line> Shape::Box::PToLineVec() {
-    return { Shape::Line(A, B), Shape::Line(B, C), Shape::Line(C, D), Shape::Line(D, A) };
-}
 #pragma endregion
 
 #pragma region AABB
@@ -399,10 +393,6 @@ void Shape::AABB::Scale(float scaleX, float scaleY, float pivotX, float pivotY)
 
 std::vector<glm::vec2> Shape::AABB::PToListVec() {
     return { A, B };
-}
-std::vector<Shape::Line> Shape::AABB::PToLineVec() {
-    glm::vec2 C(A.x, B.y), D(B.x, A.y);
-    return { Shape::Line(A, C), Shape::Line(C, B), Shape::Line(B, D), Shape::Line(D, A) };
 }
 #pragma endregion
 
@@ -511,9 +501,6 @@ void Shape::Pentagon::Scale(float scaleX, float scaleY, float pivotX, float pivo
 
 std::vector<glm::vec2> Shape::Pentagon::PToListVec() {
     return { A, B, C, D, E };
-}
-std::vector<Shape::Line> Shape::Pentagon::PToLineVec() {
-    return { Shape::Line(A, B), Shape::Line(B, C), Shape::Line(C, D), Shape::Line(D, E), Shape::Line(E, A) };
 }
 #pragma endregion
 
@@ -632,11 +619,6 @@ void Shape::Hexagon::Scale(float scaleX, float scaleY, float pivotX, float pivot
 std::vector<glm::vec2> Shape::Hexagon::PToListVec() {
     return { A, B, C, D, E, F };
 }
-std::vector<Shape::Line> Shape::Hexagon::PToLineVec() {
-    return { Shape::Line(A, B), Shape::Line(B, C), Shape::Line(C, D), Shape::Line(D, E),
-                Shape::Line(E, F), Shape::Line(F, A) 
-    };
-}
 #pragma endregion
 
 #pragma region Polygon
@@ -707,14 +689,6 @@ void Shape::Polygon::Scale(float scaleX, float scaleY, float pivotX, float pivot
 
 std::vector<glm::vec2> Shape::Polygon::PToListVec() {
     return points;
-}
-std::vector<Shape::Line> Shape::Polygon::PToLineVec() {
-    std::vector<Shape::Line> res = {};
-    for (int i = 0; i < points.size() - 1; i++)
-        res.emplace_back(points[i], points[i + 1]);
-
-    res.emplace_back(points[points.size() - 1], points[0]);
-    return res;
 }
 #pragma endregion
 

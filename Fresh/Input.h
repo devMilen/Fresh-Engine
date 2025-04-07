@@ -35,3 +35,4 @@ public:
 	static bool IsKeyPressed(int key);
 	static int GetKeyAction(GLFWwindow* window, int key);
 };
+
