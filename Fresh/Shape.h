@@ -1,3 +1,4 @@
+//consider implementing an actual Shape default class like an interface
 #pragma once
 #include "glew.h"
 #include "glfw3.h"
