@@ -1,4 +1,3 @@
-//returning vectors by const&
 #pragma once
 #include "glew.h"
 #include "glfw3.h"
@@ -33,6 +32,7 @@ std::vector<Line> PToLineVec();
 class Shape
 {
 public:
+#pragma region RotatedP and ScaledP delcs
 	static glm::vec2 RotatedP(const glm::vec2& p, const glm::vec2& pivot, float degrees);
 	static glm::vec2 RotatedP(float x, float y, const glm::vec2& pivot, float degrees);
 	static glm::vec2 RotatedP(const glm::vec2& p, float pivotX, float pivotY, float degrees);
@@ -45,6 +45,7 @@ public:
 	static glm::vec2 ScaledP(float x, float y, float pivotX, float pivotY, float scaleX, float scaleY);
 	static glm::vec2 ScaledP(const glm::vec2& p, float pivotX, float pivotY, float scaleX, float scaleY);
 	static glm::vec2 ScaledP(const glm::vec2& p, float pivotX, float pivotY, const glm::vec2& scale);
+#pragma endregion
 
 	class Line
 	{
@@ -72,7 +73,6 @@ public:
 		
 		std::vector<glm::vec2> PToListVec(); 
 	};
-
 
 	class Triangle
 	{
@@ -185,19 +185,6 @@ public:
 		ScaleCir(const glm::vec2& O, float r, float scaleX, float scaleY);
 		ScaleCir(float Ox, float Oy, float r, const glm::vec2& scale);
 		ScaleCir(const glm::vec2& O, float r, const glm::vec2& scale);
-
-		ShapeDefFuncsDeclaration
-	};
-
-	class Ellipse
-	{
-	public:
-		glm::vec2 F1, F2;
-		float rSum;
-
-		Ellipse();
-		Ellipse(float F1x, float F1y, float F2x, float F2y, float rSum);
-		Ellipse(const glm::vec2& F1, const glm::vec2& F2, float rSum);
 
 		ShapeDefFuncsDeclaration
 	};

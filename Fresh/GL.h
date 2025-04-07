@@ -123,30 +123,50 @@ void main() {
 #define colCirF R"(
 	#version 330 core
 	out vec4 finalColor;
-	uniform vec4 givenColor;
 
-	uniform vec3 originPos_radius;
+	uniform vec4 givenColor;
+	uniform vec3 origin_r;
 	uniform float donutness;
 
-	void main(){
-		vec2 movedAsToOriginPx = gl_FragCoord.xy - originPos_radius.xy;
-		if(movedAsToOriginPx.x*movedAsToOriginPx.x + movedAsToOriginPx.y*movedAsToOriginPx.y <= originPos_radius.z*originPos_radius.z) 
-		{
-			if(movedAsToOriginPx.x*movedAsToOriginPx.x + movedAsToOriginPx.y*movedAsToOriginPx.y >= donutness*donutness) 
-			{
-				finalColor = givenColor;
-			}
-			else {
-				finalColor = vec4(0.0);
-			}
-		}
-		else {
+	void main() {
+		vec2 PxPosRel00 = gl_FragCoord.xy - origin_r.xy;
+		float squaredAdded = PxPosRel00.x*PxPosRel00.x + PxPosRel00.y*PxPosRel00.y;
+
+		if(squaredAdded > origin_r.z*origin_r.z) {
 			finalColor = vec4(0.0);
+			return;
 		}
+
+		if(squaredAdded >= donutness*donutness) 
+			finalColor = givenColor;
+		else finalColor = vec4(0.0);
 	}
 )"
 
-#define colScaleCir R"()"
+#define colScaleCir R"(
+	#version 330 core
+	out vec4 finalColor;
+
+	uniform vec4 givenColor;
+	uniform vec3 origin_r;
+	uniform float donutness;
+	uniform vec2 scale;
+
+	void main() {
+		vec2 PxPosRel00 = gl_FragCoord.xy - origin_r.xy,
+			scaledPxPosRel00 = vec2(PxPosRel00.x * 1.0/scale.x, PxPosRel00.y * 1.0/scale.y);
+		float squaredAdded = scaledPxPosRel00.x*scaledPxPosRel00.x + scaledPxPosRel00.y*scaledPxPosRel00.y;
+
+		if(squaredAdded > origin_r.z*origin_r.z) {
+			finalColor = vec4(0.0);
+			return;
+		}
+
+		if(squaredAdded >= donutness*donutness) 
+			finalColor = givenColor;
+		else finalColor = vec4(0.0);
+	}
+)"
 
 #define texV R"(
 	#version 330 core
@@ -192,7 +212,7 @@ void main() {
 
 		void GiveTextureParams(bool shouldBlurPixels);
 		void Select();
-#pragma region defPositions
+#pragma region defReadPositions
 #define POSITIONS_1    0.0f, 1.0f,
 #define POSITIONS_2    1.0f, 1.0f,
 #define POSITIONS_2_90 0.0f, 0.0f,
