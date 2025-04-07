@@ -517,6 +517,128 @@ std::vector<Shape::Line> Shape::Pentagon::PToLineVec() {
 }
 #pragma endregion
 
+#pragma region Hexagon
+Shape::Hexagon::Hexagon() : A(0.0f, 0.0f), B(0.0f, 0.0f), C(0.0f, 0.0f), D(0.0f, 0.0f), E(0.0f, 0.0f), F(0.0f, 0.0f) {}
+Shape::Hexagon::Hexagon(float x, float y, float pivotX, float pivotY) : A(x, y)
+{
+    const float degreesJump = 360.0f / 6.0f;
+    B = RotatedP(A, pivotX, pivotY, 1 * degreesJump);
+    C = RotatedP(A, pivotX, pivotY, 2 * degreesJump);
+    D = RotatedP(A, pivotX, pivotY, 3 * degreesJump);
+    E = RotatedP(A, pivotX, pivotY, 4 * degreesJump);
+    F = RotatedP(A, pivotX, pivotY, 5 * degreesJump);
+}
+Shape::Hexagon::Hexagon(const glm::vec2& A, const glm::vec2& pivot) : A(A)
+{
+    const float degreesJump = 360.0f / 6.0f;
+    B = RotatedP(A, pivot, 1 * degreesJump);
+    C = RotatedP(A, pivot, 2 * degreesJump);
+    D = RotatedP(A, pivot, 3 * degreesJump);
+    E = RotatedP(A, pivot, 4 * degreesJump);
+    F = RotatedP(A, pivot, 5 * degreesJump);
+}
+Shape::Hexagon::Hexagon(float x, float y, const glm::vec2& pivot) : A(x, y)
+{
+    const float degreesJump = 360.0f / 6.0f;
+    B = RotatedP(A, pivot, 1 * degreesJump);
+    C = RotatedP(A, pivot, 2 * degreesJump);
+    D = RotatedP(A, pivot, 3 * degreesJump);
+    E = RotatedP(A, pivot, 4 * degreesJump);
+    F = RotatedP(A, pivot, 5 * degreesJump);
+}
+Shape::Hexagon::Hexagon(const glm::vec2& A, float pivotX, float pivotY) : A(A)
+{
+    const float degreesJump = 360.0f / 6.0f;
+    B = RotatedP(A, pivotX, pivotY, 1 * degreesJump);
+    C = RotatedP(A, pivotX, pivotY, 2 * degreesJump);
+    D = RotatedP(A, pivotX, pivotY, 3 * degreesJump);
+    E = RotatedP(A, pivotX, pivotY, 4 * degreesJump);
+    F = RotatedP(A, pivotX, pivotY, 5 * degreesJump);
+}
+Shape::Hexagon::Hexagon(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C, 
+    const glm::vec2& D, const glm::vec2& E, const glm::vec2& F)
+    : A(A), B(B), C(C), D(D), E(E), F(F) {}
+Shape::Hexagon::Hexagon(float x1, float y1, float x2, float y2, float x3, float y3,
+    float x4, float y4, float x5, float y5, float x6, float y6)
+    : A(x1, y1), B(x2, y2), C(x3, y3), D(x4, y4), E(x5, y5), F(x6, y6) {}
+
+void Shape::Hexagon::Move(const glm::vec2& v) {
+    A += v;
+    B += v;
+    C += v;
+    D += v;
+    E += v;
+    F += v;
+}
+void Shape::Hexagon::Move(float x, float y) {
+    A.x += x; A.y += y;
+    B.x += x; B.y += y;
+    C.x += x; C.y += y;
+    D.x += x; D.y += y;
+    E.x += x; E.y += y;
+    F.x += x; F.y += y;
+}
+
+glm::vec2 Shape::Hexagon::Center() {
+    return (A + B + C + D + E + F) / 6.0f;
+}
+
+void Shape::Hexagon::Rotate(const glm::vec2& pivot, float degrees) {
+    A = RotatedP(A, pivot, degrees);
+    B = RotatedP(B, pivot, degrees);
+    C = RotatedP(C, pivot, degrees);
+    D = RotatedP(D, pivot, degrees);
+    E = RotatedP(E, pivot, degrees);
+    F = RotatedP(F, pivot, degrees);
+}
+void Shape::Hexagon::Rotate(float pivotX, float pivotY, float degrees) {
+    Rotate(glm::vec2(pivotX, pivotY), degrees);
+}
+void Shape::Hexagon::Rotate(float degrees) {
+    glm::vec2 center = Center();
+    Rotate(center, degrees);
+}
+
+void Shape::Hexagon::Scale(const glm::vec2& scaler) {
+    glm::vec2 center = Center();
+    A = ScaledP(A, center, scaler);
+    B = ScaledP(B, center, scaler);
+    C = ScaledP(C, center, scaler);
+    D = ScaledP(D, center, scaler);
+    E = ScaledP(E, center, scaler);
+    F = ScaledP(F, center, scaler);
+}
+void Shape::Hexagon::Scale(const glm::vec2& scaler, const glm::vec2& pivot) {
+    A = ScaledP(A, pivot, scaler);
+    B = ScaledP(B, pivot, scaler);
+    C = ScaledP(C, pivot, scaler);
+    D = ScaledP(D, pivot, scaler);
+    E = ScaledP(E, pivot, scaler);
+    F = ScaledP(F, pivot, scaler);
+}
+void Shape::Hexagon::Scale(const glm::vec2& scaler, float pivotX, float pivotY) {
+    Scale(scaler, glm::vec2(pivotX, pivotY));
+}
+void Shape::Hexagon::Scale(float scaleX, float scaleY) {
+    Scale(glm::vec2(scaleX, scaleY));
+}
+void Shape::Hexagon::Scale(float scaleX, float scaleY, const glm::vec2& pivot) {
+    Scale(glm::vec2(scaleX, scaleY), pivot);
+}
+void Shape::Hexagon::Scale(float scaleX, float scaleY, float pivotX, float pivotY) {
+    Scale(glm::vec2(scaleX, scaleY), glm::vec2(pivotX, pivotY));
+}
+
+std::vector<glm::vec2> Shape::Hexagon::PToListVec() {
+    return { A, B, C, D, E, F };
+}
+std::vector<Shape::Line> Shape::Hexagon::PToLineVec() {
+    return { Shape::Line(A, B), Shape::Line(B, C), Shape::Line(C, D), Shape::Line(D, E),
+                Shape::Line(E, F), Shape::Line(F, A) 
+    };
+}
+#pragma endregion
+
 #pragma region Polygon
 Shape::Polygon::Polygon() {}
 Shape::Polygon::Polygon(const std::vector<float>& aPoints) 

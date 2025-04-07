@@ -135,8 +135,10 @@ public:
 		glm::vec2 A, B, C, D, E, F;
 
 		Hexagon();
-		Hexagon(float x1, float y1, float maxR);
-		Hexagon(const glm::vec2& A, float maxR);
+		Hexagon(float x1, float y1, float pivotX, float pivotY);
+		Hexagon(const glm::vec2& A, float pivotX, float pivotY);
+		Hexagon(float x1, float y1, const glm::vec2& pivot);
+		Hexagon(const glm::vec2& A, const glm::vec2& pivot);
 		Hexagon(float x1, float y1, float x2, float y2, float x3, float y3,
 			float x4, float y4, float x5, float y5, float x6, float y6);
 		Hexagon(const glm::vec2& aA, const glm::vec2& B, const glm::vec2& C,
