@@ -720,8 +720,8 @@ std::vector<Shape::Line> Shape::Polygon::PToLineVec() {
 
 #pragma region Circle
 Shape::Circle::Circle() : O(0.0f, 0.0f), r(0.0f) {}
-Shape::Circle::Circle(float Ox, float Oy, float r) : O(Ox, Oy), r(r){}
-Shape::Circle::Circle(const glm::vec2& O, float r) :O(O), r(r) {}
+Shape::Circle::Circle(float Ox, float Oy, float r) : O(Ox, Oy), r(r) {}
+Shape::Circle::Circle(const glm::vec2& O, float r) : O(O), r(r) {}
 
 void Shape::Circle::Move(const glm::vec2& v) 
 {
@@ -745,12 +745,49 @@ void Shape::Circle::Rotate(float pivotX, float pivotY, float degrees)
 {
     O = RotatedP(O, pivotX, pivotY, degrees);
 }
-
-void Scale(const glm::vec2& scaler) {}
-void Scale(const glm::vec2& scaler, const glm::vec2& pivot) {}
-void Scale(const glm::vec2& scaler, float pivotX, float pivotY) {}
-void Scale(float scaleX, float scaleY) {}
-void Scale(float scaleX, float scaleY, const glm::vec2& pivot) {}
-void Scale(float scaleX, float scaleY, float pivotX, float pivotY) {}
 #pragma endregion
 
+#pragma region ScaleCir
+Shape::ScaleCir::ScaleCir() : O(0.0f, 0.0f), r(0), scale(0.0f, 0.0f) {}
+Shape::ScaleCir::ScaleCir(float Ox, float Oy, float r, float scaleX, float scaleY) 
+    : O(Ox, Oy), r(r), scale(scaleX, scaleY) {}
+Shape::ScaleCir::ScaleCir(const glm::vec2& O, float r, float scaleX, float scaleY) 
+    : O(O), r(r), scale(scaleX, scaleY) {}
+Shape::ScaleCir::ScaleCir(float Ox, float Oy, float r, const glm::vec2& scale) 
+    : O(Ox, Oy), r(r), scale(scale) {}
+Shape::ScaleCir::ScaleCir(const glm::vec2& O, float r, const glm::vec2& scale) 
+    : O(O), r(r), scale(scale) {}
+
+void Shape::ScaleCir::Move(const glm::vec2& v)
+{
+    O += v;
+}
+void Shape::ScaleCir::Move(float x, float y)
+{
+    O.x += x; O.y += y;
+}
+
+glm::vec2 Shape::ScaleCir::Center()
+{
+    return O;
+}
+
+void Shape::ScaleCir::Rotate(const glm::vec2& pivot, float degrees)
+{
+    O = RotatedP(O, pivot, degrees);
+}
+void Shape::ScaleCir::Rotate(float pivotX, float pivotY, float degrees)
+{
+    O = RotatedP(O, pivotX, pivotY, degrees);
+}
+
+void Shape::ScaleCir::Scale(float scaleX, float scaleY) 
+{
+    scale.x *= scaleX;
+    scale.y *= scaleY;
+}
+void Shape::ScaleCir::Scale(const glm::vec2& aScale)
+{
+    scale *= aScale;
+}
+#pragma endregion

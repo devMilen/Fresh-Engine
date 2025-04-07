@@ -123,7 +123,7 @@ void main() {
 #define colCirF R"(
 	#version 330 core
 	out vec4 finalColor;
-	uniform vec4 colorRGBA;
+	uniform vec4 givenColor;
 
 	uniform vec3 originPos_radius;
 	uniform float donutness;
@@ -134,7 +134,7 @@ void main() {
 		{
 			if(movedAsToOriginPx.x*movedAsToOriginPx.x + movedAsToOriginPx.y*movedAsToOriginPx.y >= donutness*donutness) 
 			{
-				finalColor = colorRGBA;
+				finalColor = givenColor;
 			}
 			else {
 				finalColor = vec4(0.0);
@@ -145,6 +145,8 @@ void main() {
 		}
 	}
 )"
+
+#define colScaleCir R"()"
 
 #define texV R"(
 	#version 330 core

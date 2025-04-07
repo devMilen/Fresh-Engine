@@ -10,34 +10,29 @@ CREATEWINDOW(800, 800) MAIN
 //TODO: triangle and a box independantly and test each change function and collision
 
 Sprite sprite;
+Shape::Circle cir(350, 350, 100);
 
 void Start()
 {
-    Shape::Hexagon pent(300, 200, 300+100, 200+137.5);
-    pent.Move(-200, 0);
-    pent.Rotate(-30);
 
-    std::array<float, 12> vertices = {
-        pent.A.x, pent.A.y,
-        pent.B.x, pent.B.y,
-        pent.C.x, pent.C.y,
-        pent.D.x, pent.D.y,
-        pent.E.x, pent.E.y,
-        pent.F.x, pent.F.y
+    std::array<float, 8> vertices = {
+        cir.O.x - cir.r, cir.O.y - cir.r,
+        cir.O.x - cir.r, cir.O.y + cir.r,
+        cir.O.x + cir.r, cir.O.y + cir.r,
+        cir.O.x + cir.r, cir.O.y - cir.r,
     };
 
-    std::array<unsigned int, 12> indices = {
-        0, 1, 5,
-        1, 2, 5,
-        2, 4, 5,
-        2, 3, 4
+    std::array<unsigned int, 6> indices = {
+        0, 1, 2, 2, 3, 0
     };
 
-    sprite = Sprite(vertices, indices, true, matOffV, colF, "", false, glm::ortho(0.0f, 800.0f, 800.0f, 0.0f));
+    sprite = Sprite(vertices, indices, true, matOffV, colCirF, "", false, glm::ortho(0.0f, 800.0f, 800.0f, 0.0f));
 }
 
 void Update()
 {
+    glUniform3f(sprite.shader.ULocOf("originPos_radius"), cir.O.x, 800-cir.O.y, cir.r);
+    glUniform1f(sprite.shader.ULocOf("donutness"), 0);
     sprite.Render(0, 0, 1, 1);
 }
 
