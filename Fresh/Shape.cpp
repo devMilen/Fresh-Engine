@@ -318,11 +318,11 @@ float Shape::AABB::Height()
     return abs(points[1].y - points[0].y);
 }
 
-const Shape::Types Shape::Line::Type() const
+const Shape::Types Shape::AABB::Type() const
 {
     return Shape::Types::ShapeAABB;
 }
-const unsigned int Shape::Line::pointsSize() const
+const unsigned int Shape::AABB::pointsSize() const
 {
     return 2;
 }
