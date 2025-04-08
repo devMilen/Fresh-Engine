@@ -134,73 +134,98 @@ glm::vec2 Shape::ScaledP(const glm::vec2& p, float pivotX, float pivotY, const g
 }
 #pragma endregion
 
-//#pragma region Line
-Shape::Line::Line() : A(0.0f, 0.0f), B(0.0f, 0.0f) {}
+#pragma region Def
+void Shape::Def::Move(const glm::vec2& v)
+{
+    short size = pointsSize();
+    for(int i = 0; i < size; i++)
+        points[i] += v;
+}
+void Shape::Def::Move(float x, float y) 
+{
+    const short size = pointsSize();
+    for (int i = 0; i < size; i++)
+    {
+        points[i].x += x;
+        points[i].y += y;
+    }
+}
 
-Shape::Line::Line(const glm::vec2& A, const glm::vec2& B) : A(A), B(B) {}
+glm::vec2 Shape::Def::Center() {
+    glm::vec2 sum(0.0f);
+    const short size = pointsSize();
+    for (int i = 0; i < size; i++)
+        sum += points[i];
 
-Shape::Line::Line(float x1, float y1, float x2, float y2) : A(x1, y1), B(x2, y2) {}
-//
-//void Shape::Line::Move(const glm::vec2& v) {
-//    A += v;
-//    B += v;
-//}
-//
-//void Shape::Line::Move(float x, float y) {
-//    A.x += x; A.y += y;
-//    B.x += x; B.y += y;
-//}
-//
-//glm::vec2 Shape::Line::Center() {
-//    return (A + B) * 0.5f;
-//}
-//
-//void Shape::Line::Rotate(const glm::vec2& pivot, float degrees) {
-//    A = RotatedP(A, pivot, degrees);
-//    B = RotatedP(B, pivot, degrees);
-//}
-//
-//void Shape::Line::Rotate(float pivotX, float pivotY, float degrees) {
-//    Rotate(glm::vec2(pivotX, pivotY), degrees);
-//}
-//
-//void Shape::Line::Rotate(float degrees) {
-//    glm::vec2 center = Center();
-//    Rotate(center, degrees);
-//}
-//
-//void Shape::Line::Scale(const glm::vec2& scaler) {
-//    glm::vec2 center = Center();
-//    A = ScaledP(A, center, scaler);
-//    B = ScaledP(B, center, scaler);
-//}
-//
-//void Shape::Line::Scale(const glm::vec2& scaler, const glm::vec2& pivot) {
-//    A = ScaledP(A, pivot, scaler);
-//    B = ScaledP(B, pivot, scaler);
-//}
-//
-//void Shape::Line::Scale(const glm::vec2& scaler, float pivotX, float pivotY) {
-//    Scale(scaler, glm::vec2(pivotX, pivotY));
-//}
-//
-//void Shape::Line::Scale(float scaleX, float scaleY) {
-//    Scale(glm::vec2(scaleX, scaleY));
-//}
-//
-//void Shape::Line::Scale(float scaleX, float scaleY, const glm::vec2& pivot) {
-//    Scale(glm::vec2(scaleX, scaleY), pivot);
-//}
-//
-//void Shape::Line::Scale(float scaleX, float scaleY, float pivotX, float pivotY) {
-//    Scale(glm::vec2(scaleX, scaleY), glm::vec2(pivotX, pivotY));
-//}
-//
-//std::vector<glm::vec2> Shape::Line::PToListVec() {
-//    return { A, B };
-//}
-//
-//#pragma endregion
+    return sum / static_cast<float>(pointsSize());
+}
+
+void Shape::Def::Rotate(const glm::vec2& pivot, float degrees) {
+    const short size = pointsSize(); 
+    for(int i = 0; i < size; i++)
+        points[i] = Shape::RotatedP(points[i], pivot, degrees);
+}
+void Shape::Def::Rotate(float pivotX, float pivotY, float degrees) {
+    Rotate(glm::vec2(pivotX, pivotY), degrees);
+}
+void Shape::Def::Rotate(float degrees) {
+    Rotate(Center(), degrees);
+}
+
+void Shape::Def::Scale(const glm::vec2& scaler)
+{
+    Scale(scaler, Center());
+}
+void Shape::Def::Scale(const glm::vec2& scaler, const glm::vec2& pivot)
+{
+    const short size = pointsSize(); 
+    for(int i = 0; i < size; i++)
+        points[i] = Shape::ScaledP(points[i], pivot, scaler);
+}
+void Shape::Def::Scale(const glm::vec2& scaler, float pivotX, float pivotY) 
+{
+    Scale(scaler, glm::vec2(pivotX, pivotY));
+}
+void Shape::Def::Scale(float scaleX, float scaleY)
+{
+    Scale(glm::vec2(scaleX, scaleY), Center());
+}
+void Shape::Def::Scale(float scaleX, float scaleY, const glm::vec2& pivot) 
+{
+    Scale(glm::vec2(scaleX, scaleY), pivot);
+}
+void Shape::Def::Scale(float scaleX, float scaleY, float pivotX, float pivotY) 
+{
+    Scale(glm::vec2(scaleX, scaleY), glm::vec2(pivotX, pivotY));
+}
+#pragma endregion
+
+#pragma region Line
+Shape::Line::Line() {
+    localPoints[0] = glm::vec2(0);
+    localPoints[1] = glm::vec2(0);
+    points = localPoints;
+}
+Shape::Line::Line(const glm::vec2& A, const glm::vec2& B) {
+    localPoints[0] = A;
+    localPoints[1] = B;
+    points = localPoints;
+}
+Shape::Line::Line(float x1, float y1, float x2, float y2) {
+    localPoints[0] = glm::vec2(x1, y1);
+    localPoints[1] = glm::vec2(x2, y2);
+    points = localPoints;  
+}
+
+const Shape::Types Shape::Line::Type() const
+{
+    return Shape::Types::ShapeLine;
+}
+const unsigned int Shape::Line::pointsSize() const
+{
+    return 2;
+}
+#pragma endregion
 
 #pragma region Triangle
 Shape::Triangle::Triangle() : A(0.0f, 0.0f), B(0.0f, 0.0f), C(0.0f, 0.0f) {}

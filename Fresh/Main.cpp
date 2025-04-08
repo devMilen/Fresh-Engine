@@ -13,9 +13,15 @@ CREATEWINDOW(800, 800) MAIN
 // 
 //move ScaledP and RotatedP to transform class
 // 
-//GOAL: simulate shapes some with sprites(with animations) with collisions reacting to input and UI
-// TODO: current - Shape class
-//  UI, Animation, Collision, some tile system, Transform, Sound, Physics
+// 
+// 
+//GOAL: simulate shapes some with sprites(with animations) with collisions reacting to input and UI with sound effects
+// current - Shape class with default shape
+//  next - Transform, Collision, Animation, UI, Sound, some tile system, Physics
+//TODO: update all the other classes and assert what can be called
+//
+// 
+
 
 
 Sprite sprite;
@@ -23,21 +29,21 @@ Shape::Line line(400, 400, 200, 300);
 
 void Start()
 {
-    std::array<float, 8> vertices = {
-        line.A.x,line.A.y,
-        line.B.x,line.B.y,
-        500, 600
+    line.Move(100, 100);
+    line.Rotate(90);
+    std::array<float, 4> vertices = {
+        line.points[0].x,line.points[0].y,
+        line.points[1].x,line.points[1].y,
     };
 
-    std::array<unsigned int, 4> indices = {1, 0, 0, 2};
+    std::array<unsigned int, 4> indices = {0, 1, 1, 2};
 
-    sprite = Sprite(vertices, indices, true, matOffV, colF, "", false,
+    sprite = Sprite(vertices, true, matOffV, colF, "", false,
         glm::ortho(0.0f, 800.0f, 800.0f, 0.0f));
-    std::cout << glGetError() << std::endl;
 }
 
 void Update()
 {
-    sprite.RenderLineS(0, 1, 1, 0);
+    sprite.RenderLine(0, 1, 1, 0);
 }
 

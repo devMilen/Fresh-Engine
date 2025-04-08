@@ -9,25 +9,6 @@
 
 #include <vector>
 
-#define ShapeDefFuncsDeclaration 		\
-void Move(const glm::vec2& v);\
-void Move(float x, float y);\
-\
-glm::vec2 Center();\
-\
-void Rotate(const glm::vec2& pivot, float degrees);\
-void Rotate(float pivotX, float pivotY, float degrees);\
-void Rotate(float degrees);\
-\
-void Scale(const glm::vec2& scaler);\
-void Scale(const glm::vec2& scaler, const glm::vec2& pivot);\
-void Scale(const glm::vec2& scaler, float pivotX, float pivotY);\
-void Scale(float scaleX, float scaleY);\
-void Scale(float scaleX, float scaleY, const glm::vec2& pivot);\
-void Scale(float scaleX, float scaleY, float pivotX, float pivotY);\
-\
-std::vector<glm::vec2> PToListVec();
-
 class Shape
 {
 public:
@@ -45,19 +26,21 @@ public:
 	static glm::vec2 ScaledP(const glm::vec2& p, float pivotX, float pivotY, float scaleX, float scaleY);
 	static glm::vec2 ScaledP(const glm::vec2& p, float pivotX, float pivotY, const glm::vec2& scale);
 #pragma endregion
-	enum Type {
-		TypeNone = 0, TypeDef = 1, TypeLine = 2, TypeTriangle = 3,
-		TypeBox = 4, TypePentagon = 5, TypeHexagon = 6, TypeAABB = 7,
-		TypePolygon = 8, TypeCircle = 9, TypeScaleCir = 10
+
+	enum Types {
+		ShapeNone = 0, ShapeDef = 1, ShapeLine = 2, ShapeTriangle = 3,
+		ShapeBox = 4, ShapePentagon = 5, ShapeHexagon = 6, ShapeAABB = 7,
+		ShapePolygon = 8, ShapeCircle = 9, ShapeScaleCir = 10
 	};
 
 	class Def {
-		virtual ~Def() = default;
+	public:
+		glm::vec2* points = nullptr;
 
 		void Move(const glm::vec2& v); 
 		void Move(float x, float y); 
 		
-		glm::vec2 Center() const; 
+		glm::vec2 Center(); 
 		
 		void Rotate(const glm::vec2& pivot, float degrees); 
 		void Rotate(float pivotX, float pivotY, float degrees); 
@@ -70,81 +53,87 @@ public:
 		void Scale(float scaleX, float scaleY, const glm::vec2& pivot); 
 		void Scale(float scaleX, float scaleY, float pivotX, float pivotY); 
 		
-		virtual Type Type() const = 0;
-		virtual std::vector<glm::vec2> GetPointList() const = 0; 
-		virtual void SetPointList(const std::vector<glm::vec2>& newPoints) = 0; 
+		virtual ~Def() = default;
+
+		virtual const unsigned int pointsSize() const = 0;
+		virtual const Types Type() const = 0;
 	};
 
-	class Line
+	class Line : public Def
 	{
 	public:
-		glm::vec2 A, B;
-
 		Line();
 		Line(const glm::vec2& A, const glm::vec2& B);
 		Line(float x1, float y1, float x2, float y2);
+
+		const Types Type() const override;
+		const unsigned int pointsSize() const override;
+
+	private:
+		glm::vec2 localPoints[2];
 	};
 
-	class Triangle
+	class Triangle : public Def
 	{
 	public:
-		glm::vec2 A, B, C;
-
 		Triangle();
 		Triangle(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C);
 		Triangle(float x1, float y1, float x2, float y2, float x3, float y3);
 
-		ShapeDefFuncsDeclaration
+		const Types Type() const override;
+		const unsigned int pointsSize() const override;
+
+	private:
+		glm::vec2 localPoints[3];
 	};
 
-	class Box
+	class Box : public Def
 	{
 	public:
-		glm::vec2 A, B, C, D;
-
 		Box();
-		Box(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
 		Box(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C, const glm::vec2& D);
+		Box(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
 
-		ShapeDefFuncsDeclaration
+		const Types Type() const override;
+		const unsigned int pointsSize() const override;
+
+	private:
+		glm::vec2 localPoints[4];
 	};
 
-	class AABB
+	class AABB : public Def
 	{
 	public:
-		glm::vec2 A, B;
-
 		AABB();
-		AABB(float x1, float y1, float x2, float y2);
 		AABB(const glm::vec2& A, const glm::vec2& B);
+		AABB(float x1, float y1, float x2, float y2);
 
-		float Width();
-		float Height();
+		const Types Type() const override;
+		const unsigned int pointsSize() const override;
 
-		ShapeDefFuncsDeclaration
+	private:
+		glm::vec2 localPoints[2];
 	};
 
-	class Pentagon
+	class Pentagon : public Def
 	{
 	public:
-		glm::vec2 A, B, C, D, E;
-
 		Pentagon();
-		Pentagon(float x, float y, float pivotX, float pivotY);
-		Pentagon(const glm::vec2& A, const glm::vec2& pivot);
-		Pentagon(float x, float y, const glm::vec2& pivot);
-		Pentagon(const glm::vec2& A, float pivotX, float pivotY);
-		Pentagon(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float x5, float y5);
-		Pentagon(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C, const glm::vec2& D, const glm::vec2& E);
+		Pentagon(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C, 
+			const glm::vec2& D, const glm::vec2& E);
+		Pentagon(float x1, float y1, float x2, float y2, float x3, float y3,
+			float x4, float y4, float x5, float y5);
 
-		ShapeDefFuncsDeclaration
+		const Types Type() const override;
+		const unsigned int pointsSize() const override;
+
+	private:
+		glm::vec2 localPoints[5];
 	};
 
-	class Hexagon
+	class Hexagon : public Def
 	{
 	public:
-		glm::vec2 A, B, C, D, E, F;
-
 		Hexagon();
 		Hexagon(float x1, float y1, float pivotX, float pivotY);
 		Hexagon(const glm::vec2& A, float pivotX, float pivotY);
@@ -155,22 +144,28 @@ public:
 		Hexagon(const glm::vec2& aA, const glm::vec2& B, const glm::vec2& C,
 			const glm::vec2& D, const glm::vec2& E, const glm::vec2& F);
 
-		ShapeDefFuncsDeclaration
+		const Types Type() const override;
+		const unsigned int pointsSize() const override;
+
+	private:
+		glm::vec2 localPoints[6];
 	};
 
-	class Polygon
+	class Polygon : public Def
 	{
 	public:
-		std::vector<glm::vec2> points;
-
 		Polygon();
 		Polygon(const std::vector<float>& aPoints);
 		Polygon(const std::vector<glm::vec2>& aPoints);
 
-		ShapeDefFuncsDeclaration
+		const Types Type() const override;
+		const unsigned int pointsSize() const override;
+
+	private:
+		std::vector<glm::vec2> localPoints;
 	};
 
-	class Circle
+	class Circle : public Def
 	{
 	public:
 		glm::vec2 O;
@@ -180,10 +175,14 @@ public:
 		Circle(float Ox, float Oy, float r);
 		Circle(const glm::vec2& O, float r);
 
-		ShapeDefFuncsDeclaration
+		const Types Type() const override;
+		const unsigned int pointsSize() const override;
+
+	private:
+		glm::vec2 localPoints[1];
 	};
 
-	class ScaleCir
+	class ScaleCir : public Def
 	{
 	public:
 
@@ -196,7 +195,11 @@ public:
 		ScaleCir(float Ox, float Oy, float r, const glm::vec2& scale);
 		ScaleCir(const glm::vec2& O, float r, const glm::vec2& scale);
 
-		ShapeDefFuncsDeclaration
+		const Types Type() const override;
+		const unsigned int pointsSize() const override;
+
+	private:
+		glm::vec2 localPoints[1];
 	};
 };
 
