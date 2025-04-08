@@ -228,556 +228,257 @@ const unsigned int Shape::Line::pointsSize() const
 #pragma endregion
 
 #pragma region Triangle
-Shape::Triangle::Triangle() : A(0.0f, 0.0f), B(0.0f, 0.0f), C(0.0f, 0.0f) {}
-Shape::Triangle::Triangle(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C) : A(A), B(B), C(C) {}
-Shape::Triangle::Triangle(float x1, float y1, float x2, float y2, float x3, float y3) : A(x1, y1), B(x2, y2), C(x3, y3) {}
-
-void Shape::Triangle::Move(const glm::vec2& v) {
-    A += v;
-    B += v;
-    C += v;
+Shape::Triangle::Triangle() {
+    localPoints[0] = glm::vec2(0);
+    localPoints[1] = glm::vec2(0);
+    localPoints[2] = glm::vec2(0);
+    points = localPoints;
 }
-void Shape::Triangle::Move(float x, float y) {
-    A.x += x; A.y += y;
-    B.x += x; B.y += y;
-    C.x += x; C.y += y;
+Shape::Triangle::Triangle(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C) {
+    localPoints[0] = A;
+    localPoints[1] = B;
+    localPoints[2] = C;
+    points = localPoints;
 }
-
-glm::vec2 Shape::Triangle::Center() {
-    return (A + B + C) / 3.0f;
-}
-
-void Shape::Triangle::Rotate(const glm::vec2& pivot, float degrees) {
-    A = RotatedP(A, pivot, degrees);
-    B = RotatedP(B, pivot, degrees);
-    C = RotatedP(C, pivot, degrees);
-}
-void Shape::Triangle::Rotate(float pivotX, float pivotY, float degrees) {
-    Rotate(glm::vec2(pivotX, pivotY), degrees);
-}
-void Shape::Triangle::Rotate(float degrees) {
-    glm::vec2 center = Center();
-    Rotate(center, degrees);
+Shape::Triangle::Triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
+    localPoints[0] = glm::vec2(x1, y1);
+    localPoints[1] = glm::vec2(x2, y2);
+    localPoints[2] = glm::vec2(x3, y3);
+    points = localPoints;
 }
 
-void Shape::Triangle::Scale(const glm::vec2& scaler) {
-    glm::vec2 center = Center();
-    A = ScaledP(A, center, scaler);
-    B = ScaledP(B, center, scaler);
-    C = ScaledP(C, center, scaler);
+const Shape::Types Shape::Triangle::Type() const
+{
+    return Shape::Types::ShapeTriangle;
 }
-void Shape::Triangle::Scale(const glm::vec2& scaler, const glm::vec2& pivot) {
-    A = ScaledP(A, pivot, scaler);
-    B = ScaledP(B, pivot, scaler);
-    C = ScaledP(C, pivot, scaler);
-}
-void Shape::Triangle::Scale(const glm::vec2& scaler, float pivotX, float pivotY) {
-    Scale(scaler, glm::vec2(pivotX, pivotY));
-}
-void Shape::Triangle::Scale(float scaleX, float scaleY) {
-    Scale(glm::vec2(scaleX, scaleY));
-}
-void Shape::Triangle::Scale(float scaleX, float scaleY, const glm::vec2& pivot) {
-    Scale(glm::vec2(scaleX, scaleY), pivot);
-}
-void Shape::Triangle::Scale(float scaleX, float scaleY, float pivotX, float pivotY) {
-    Scale(glm::vec2(scaleX, scaleY), glm::vec2(pivotX, pivotY));
-}
-
-std::vector<glm::vec2> Shape::Triangle::PToListVec() {
-    return { A, B, C };
+const unsigned int Shape::Triangle::pointsSize() const
+{
+    return 3;
 }
 #pragma endregion
 
 #pragma region Box
-Shape::Box::Box() : A(0.0f, 0.0f), B(0.0f, 0.0f), C(0.0f, 0.0f), D(0.0f, 0.0f) {}
-Shape::Box::Box(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C, const glm::vec2& D) 
-    : A(A), B(B), C(C), D(D) {}
-Shape::Box::Box(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) 
-    : A(x1, y1), B(x2, y2), C(x3, y3), D(x4, y4) {}
-
-void Shape::Box::Move(const glm::vec2& v) {
-    A += v;
-    B += v;
-    C += v;
-    D += v;
+Shape::Box::Box() {
+    localPoints[0] = glm::vec2(0);
+    localPoints[1] = glm::vec2(0);
+    localPoints[2] = glm::vec2(0);
+    localPoints[3] = glm::vec2(0);
+    points = localPoints;
 }
-void Shape::Box::Move(float x, float y) {
-    A.x += x; A.y += y;
-    B.x += x; B.y += y;
-    C.x += x; C.y += y;
-    D.x += x; D.y += y;
+Shape::Box::Box(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C, 
+const glm::vec2& D) {
+    localPoints[0] = A;
+    localPoints[1] = B;
+    localPoints[2] = C;
+    localPoints[3] = D;
+    points = localPoints;
 }
-
-glm::vec2 Shape::Box::Center() {
-    return (A + B + C + D) / 4.0f;
-}
-
-void Shape::Box::Rotate(const glm::vec2& pivot, float degrees) {
-    A = RotatedP(A, pivot, degrees);
-    B = RotatedP(B, pivot, degrees);
-    C = RotatedP(C, pivot, degrees);
-    D = RotatedP(D, pivot, degrees);
-}
-void Shape::Box::Rotate(float pivotX, float pivotY, float degrees) {
-    Rotate(glm::vec2(pivotX, pivotY), degrees);
-}
-void Shape::Box::Rotate(float degrees) {
-    glm::vec2 center = Center();
-    Rotate(center, degrees);
+Shape::Box::Box(float x1, float y1, float x2, float y2, float x3, float y3,
+float x4, float y4) {
+    localPoints[0] = glm::vec2(x1, y1);
+    localPoints[1] = glm::vec2(x2, y2);
+    localPoints[2] = glm::vec2(x3, y3);
+    localPoints[3] = glm::vec2(x4, y4);
+    points = localPoints;
 }
 
-void Shape::Box::Scale(const glm::vec2& scaler) {
-    glm::vec2 center = Center();
-    A = ScaledP(A, center, scaler);
-    B = ScaledP(B, center, scaler);
-    C = ScaledP(C, center, scaler);
-    D = ScaledP(D, center, scaler);
+const Shape::Types Shape::Box::Type() const
+{
+    return Shape::Types::ShapeBox;
 }
-void Shape::Box::Scale(const glm::vec2& scaler, const glm::vec2& pivot) {
-    A = ScaledP(A, pivot, scaler);
-    B = ScaledP(B, pivot, scaler);
-    C = ScaledP(C, pivot, scaler);
-    D = ScaledP(D, pivot, scaler);
-}
-void Shape::Box::Scale(const glm::vec2& scaler, float pivotX, float pivotY) {
-    Scale(scaler, glm::vec2(pivotX, pivotY));
-}
-void Shape::Box::Scale(float scaleX, float scaleY) {
-    Scale(glm::vec2(scaleX, scaleY));
-}
-void Shape::Box::Scale(float scaleX, float scaleY, const glm::vec2& pivot) {
-    Scale(glm::vec2(scaleX, scaleY), pivot);
-}
-void Shape::Box::Scale(float scaleX, float scaleY, float pivotX, float pivotY) {
-    Scale(glm::vec2(scaleX, scaleY), glm::vec2(pivotX, pivotY));
-}
-
-std::vector<glm::vec2> Shape::Box::PToListVec() {
-    return { A, B, C, D };
+const unsigned int Shape::Box::pointsSize() const
+{
+    return 4;
 }
 #pragma endregion
 
 #pragma region AABB
-Shape::AABB::AABB() : A(0.0f, 0.0f), B(0.0f, 0.0f) {}
-Shape::AABB::AABB(float x1, float y1, float x2, float y2) : A(x1, y1), B(x2, y2) {}
-Shape::AABB::AABB(const glm::vec2& A, const glm::vec2& B) : A(A), B(B) {}
-
-float Shape::AABB::Width() 
-{
-    return abs(B.x - A.x);
+Shape::AABB::AABB() {
+    localPoints[0] = glm::vec2(0);
+    localPoints[1] = glm::vec2(0);
+    points = localPoints;
 }
-float Shape::AABB::Height() 
-{
-    return abs(B.y - A.y);
+Shape::AABB::AABB(const glm::vec2& A, const glm::vec2& B) {
+    localPoints[0] = A;
+    localPoints[1] = B;
+    points = localPoints;
 }
-
-void Shape::AABB::Move(const glm::vec2& v) 
-{
-    A += v;
-    B += v;
-}
-void Shape::AABB::Move(float x, float y) 
-{
-    A.x += x; A.y += y;
-    B.x += x; B.y += y;
+Shape::AABB::AABB(float x1, float y1, float x2, float y2) {
+    localPoints[0] = glm::vec2(x1, y1);
+    localPoints[1] = glm::vec2(x2, y2);
+    points = localPoints;
 }
 
-glm::vec2 Shape::AABB::Center() 
+float Shape::AABB::Width()
 {
-    return (A + B) / 2.0f;
+    return abs(points[1].x - points[0].x);
+}
+float Shape::AABB::Height()
+{
+    return abs(points[1].y - points[0].y);
 }
 
-void Shape::AABB::Scale(const glm::vec2& scaler) 
+const Shape::Types Shape::Line::Type() const
 {
-    glm::vec2 center = Center();
-    A = ScaledP(A, center, scaler);
-    B = ScaledP(B, center, scaler);
+    return Shape::Types::ShapeAABB;
 }
-void Shape::AABB::Scale(const glm::vec2& scaler, const glm::vec2& pivot) 
+const unsigned int Shape::Line::pointsSize() const
 {
-    A = ScaledP(A, pivot, scaler);
-    B = ScaledP(B, pivot, scaler);
-}
-void Shape::AABB::Scale(const glm::vec2& scaler, float pivotX, float pivotY) 
-{
-    Scale(scaler, glm::vec2(pivotX, pivotY));
-}
-void Shape::AABB::Scale(float scaleX, float scaleY)
-{
-    Scale(glm::vec2(scaleX, scaleY));
-}
-void Shape::AABB::Scale(float scaleX, float scaleY, const glm::vec2& pivot)
-{
-    Scale(glm::vec2(scaleX, scaleY), pivot);
-}
-void Shape::AABB::Scale(float scaleX, float scaleY, float pivotX, float pivotY) 
-{
-    Scale(glm::vec2(scaleX, scaleY), glm::vec2(pivotX, pivotY));
-}
-
-std::vector<glm::vec2> Shape::AABB::PToListVec() {
-    return { A, B };
+    return 2;
 }
 #pragma endregion
 
 #pragma region Pentagon
-Shape::Pentagon::Pentagon() : A(0.0f, 0.0f), B(0.0f, 0.0f), C(0.0f, 0.0f), D(0.0f, 0.0f), E(0.0f, 0.0f) {}
-Shape::Pentagon::Pentagon(float x, float y, float pivotX, float pivotY) : A(x, y)
+Shape::Pentagon::Pentagon() {
+    localPoints[0] = glm::vec2(0);
+    localPoints[1] = glm::vec2(0);
+    localPoints[2] = glm::vec2(0);
+    localPoints[3] = glm::vec2(0);
+    localPoints[4] = glm::vec2(0);
+    points = localPoints;
+}
+Shape::Pentagon::Pentagon(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C,
+    const glm::vec2& D, const glm::vec2& E) {
+    localPoints[0] = A;
+    localPoints[1] = B;
+    localPoints[2] = C;
+    localPoints[3] = D;
+    localPoints[4] = E;
+    points = localPoints;
+}
+Shape::Pentagon::Pentagon(float x1, float y1, float x2, float y2, float x3, float y3,
+    float x4, float y4, float x5, float y5) {
+    localPoints[0] = glm::vec2(x1, y1);
+    localPoints[1] = glm::vec2(x2, y2);
+    localPoints[2] = glm::vec2(x3, y3);
+    localPoints[3] = glm::vec2(x4, y4);
+    localPoints[4] = glm::vec2(x5, y5);
+    points = localPoints;
+}
+
+const Shape::Types Shape::Pentagon::Type() const
 {
-    const float degreesJump = 360.0f / 5.0f;
-    B = RotatedP(A, pivotX, pivotY, 1*degreesJump);
-    C = RotatedP(A, pivotX, pivotY, 2 * degreesJump);
-    D = RotatedP(A, pivotX, pivotY, 3 * degreesJump);
-    E = RotatedP(A, pivotX, pivotY, 4 * degreesJump);
+    return Shape::Types::ShapePentagon;
 }
-Shape::Pentagon::Pentagon(const glm::vec2& A, const glm::vec2& pivot) : A(A)
+const unsigned int Shape::Pentagon::pointsSize() const
 {
-    const float degreesJump = 360.0f / 5.0f;
-    B = RotatedP(A, pivot, 1 * degreesJump);
-    C = RotatedP(A, pivot, 2 * degreesJump);
-    D = RotatedP(A, pivot, 3 * degreesJump);
-    E = RotatedP(A, pivot, 4 * degreesJump);
-}
-Shape::Pentagon::Pentagon(float x, float y, const glm::vec2& pivot) : A(x, y)
-{
-    const float degreesJump = 360.0f / 5.0f;
-    B = RotatedP(A, pivot, 1 * degreesJump);
-    C = RotatedP(A, pivot, 2 * degreesJump);
-    D = RotatedP(A, pivot, 3 * degreesJump);
-    E = RotatedP(A, pivot, 4 * degreesJump);
-}
-Shape::Pentagon::Pentagon(const glm::vec2& A, float pivotX, float pivotY) : A(A)
-{
-    const float degreesJump = 360.0f / 5.0f;
-    B = RotatedP(A, pivotX, pivotY, 1 * degreesJump);
-    C = RotatedP(A, pivotX, pivotY, 2 * degreesJump);
-    D = RotatedP(A, pivotX, pivotY, 3 * degreesJump);
-    E = RotatedP(A, pivotX, pivotY, 4 * degreesJump);
-}
-Shape::Pentagon::Pentagon(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C, const glm::vec2& D, const glm::vec2& E)
-    : A(A), B(B), C(C), D(D), E(E) {
-}
-Shape::Pentagon::Pentagon(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float x5, float y5)
-    : A(x1, y1), B(x2, y2), C(x3, y3), D(x4, y4), E(x5, y5) {
-}
-
-void Shape::Pentagon::Move(const glm::vec2& v) {
-    A += v;
-    B += v;
-    C += v;
-    D += v;
-    E += v;
-}
-void Shape::Pentagon::Move(float x, float y) {
-    A.x += x; A.y += y;
-    B.x += x; B.y += y;
-    C.x += x; C.y += y;
-    D.x += x; D.y += y;
-    E.x += x; E.y += y;
-}
-
-glm::vec2 Shape::Pentagon::Center() {
-    return (A + B + C + D + E) / 5.0f;
-}
-
-void Shape::Pentagon::Rotate(const glm::vec2& pivot, float degrees) {
-    A = RotatedP(A, pivot, degrees);
-    B = RotatedP(B, pivot, degrees);
-    C = RotatedP(C, pivot, degrees);
-    D = RotatedP(D, pivot, degrees);
-    E = RotatedP(E, pivot, degrees);
-}
-void Shape::Pentagon::Rotate(float pivotX, float pivotY, float degrees) {
-    Rotate(glm::vec2(pivotX, pivotY), degrees);
-}
-void Shape::Pentagon::Rotate(float degrees) {
-    glm::vec2 center = Center();
-    Rotate(center, degrees);
-}
-
-void Shape::Pentagon::Scale(const glm::vec2& scaler) {
-    glm::vec2 center = Center();
-    A = ScaledP(A, center, scaler);
-    B = ScaledP(B, center, scaler);
-    C = ScaledP(C, center, scaler);
-    D = ScaledP(D, center, scaler);
-    E = ScaledP(E, center, scaler);
-}
-void Shape::Pentagon::Scale(const glm::vec2& scaler, const glm::vec2& pivot) {
-    A = ScaledP(A, pivot, scaler);
-    B = ScaledP(B, pivot, scaler);
-    C = ScaledP(C, pivot, scaler);
-    D = ScaledP(D, pivot, scaler);
-    E = ScaledP(E, pivot, scaler);
-}
-void Shape::Pentagon::Scale(const glm::vec2& scaler, float pivotX, float pivotY) {
-    Scale(scaler, glm::vec2(pivotX, pivotY));
-}
-void Shape::Pentagon::Scale(float scaleX, float scaleY) {
-    Scale(glm::vec2(scaleX, scaleY));
-}
-void Shape::Pentagon::Scale(float scaleX, float scaleY, const glm::vec2& pivot) {
-    Scale(glm::vec2(scaleX, scaleY), pivot);
-}
-void Shape::Pentagon::Scale(float scaleX, float scaleY, float pivotX, float pivotY) {
-    Scale(glm::vec2(scaleX, scaleY), glm::vec2(pivotX, pivotY));
-}
-
-std::vector<glm::vec2> Shape::Pentagon::PToListVec() {
-    return { A, B, C, D, E };
+    return 5;
 }
 #pragma endregion
 
 #pragma region Hexagon
-Shape::Hexagon::Hexagon() : A(0.0f, 0.0f), B(0.0f, 0.0f), C(0.0f, 0.0f), D(0.0f, 0.0f), E(0.0f, 0.0f), F(0.0f, 0.0f) {}
-Shape::Hexagon::Hexagon(float x, float y, float pivotX, float pivotY) : A(x, y)
-{
-    const float degreesJump = 360.0f / 6.0f;
-    B = RotatedP(A, pivotX, pivotY, 1 * degreesJump);
-    C = RotatedP(A, pivotX, pivotY, 2 * degreesJump);
-    D = RotatedP(A, pivotX, pivotY, 3 * degreesJump);
-    E = RotatedP(A, pivotX, pivotY, 4 * degreesJump);
-    F = RotatedP(A, pivotX, pivotY, 5 * degreesJump);
+Shape::Hexagon::Hexagon() {
+    localPoints[0] = glm::vec2(0);
+    localPoints[1] = glm::vec2(0);
+    localPoints[2] = glm::vec2(0);
+    localPoints[3] = glm::vec2(0);
+    localPoints[4] = glm::vec2(0);
+    localPoints[5] = glm::vec2(0);
+    points = localPoints;
 }
-Shape::Hexagon::Hexagon(const glm::vec2& A, const glm::vec2& pivot) : A(A)
-{
-    const float degreesJump = 360.0f / 6.0f;
-    B = RotatedP(A, pivot, 1 * degreesJump);
-    C = RotatedP(A, pivot, 2 * degreesJump);
-    D = RotatedP(A, pivot, 3 * degreesJump);
-    E = RotatedP(A, pivot, 4 * degreesJump);
-    F = RotatedP(A, pivot, 5 * degreesJump);
+Shape::Hexagon::Hexagon(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C,
+const glm::vec2& D, const glm::vec2& E, const glm::vec2& F) {
+    localPoints[0] = A;
+    localPoints[1] = B;
+    localPoints[2] = C;
+    localPoints[3] = D;
+    localPoints[4] = E;
+    localPoints[5] = F;
+    points = localPoints;
 }
-Shape::Hexagon::Hexagon(float x, float y, const glm::vec2& pivot) : A(x, y)
-{
-    const float degreesJump = 360.0f / 6.0f;
-    B = RotatedP(A, pivot, 1 * degreesJump);
-    C = RotatedP(A, pivot, 2 * degreesJump);
-    D = RotatedP(A, pivot, 3 * degreesJump);
-    E = RotatedP(A, pivot, 4 * degreesJump);
-    F = RotatedP(A, pivot, 5 * degreesJump);
-}
-Shape::Hexagon::Hexagon(const glm::vec2& A, float pivotX, float pivotY) : A(A)
-{
-    const float degreesJump = 360.0f / 6.0f;
-    B = RotatedP(A, pivotX, pivotY, 1 * degreesJump);
-    C = RotatedP(A, pivotX, pivotY, 2 * degreesJump);
-    D = RotatedP(A, pivotX, pivotY, 3 * degreesJump);
-    E = RotatedP(A, pivotX, pivotY, 4 * degreesJump);
-    F = RotatedP(A, pivotX, pivotY, 5 * degreesJump);
-}
-Shape::Hexagon::Hexagon(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C, 
-    const glm::vec2& D, const glm::vec2& E, const glm::vec2& F)
-    : A(A), B(B), C(C), D(D), E(E), F(F) {}
 Shape::Hexagon::Hexagon(float x1, float y1, float x2, float y2, float x3, float y3,
-    float x4, float y4, float x5, float y5, float x6, float y6)
-    : A(x1, y1), B(x2, y2), C(x3, y3), D(x4, y4), E(x5, y5), F(x6, y6) {}
-
-void Shape::Hexagon::Move(const glm::vec2& v) {
-    A += v;
-    B += v;
-    C += v;
-    D += v;
-    E += v;
-    F += v;
-}
-void Shape::Hexagon::Move(float x, float y) {
-    A.x += x; A.y += y;
-    B.x += x; B.y += y;
-    C.x += x; C.y += y;
-    D.x += x; D.y += y;
-    E.x += x; E.y += y;
-    F.x += x; F.y += y;
+    float x4, float y4, float x5, float y5, float x6, float y6) {
+    localPoints[0] = glm::vec2(x1, y1);
+    localPoints[1] = glm::vec2(x2, y2);
+    localPoints[2] = glm::vec2(x3, y3);
+    localPoints[3] = glm::vec2(x4, y4);
+    localPoints[4] = glm::vec2(x5, y5);
+    localPoints[5] = glm::vec2(x6, y6);
+    points = localPoints;
 }
 
-glm::vec2 Shape::Hexagon::Center() {
-    return (A + B + C + D + E + F) / 6.0f;
+const Shape::Types Shape::Hexagon::Type() const
+{
+    return Shape::Types::ShapeHexagon;
 }
-
-void Shape::Hexagon::Rotate(const glm::vec2& pivot, float degrees) {
-    A = RotatedP(A, pivot, degrees);
-    B = RotatedP(B, pivot, degrees);
-    C = RotatedP(C, pivot, degrees);
-    D = RotatedP(D, pivot, degrees);
-    E = RotatedP(E, pivot, degrees);
-    F = RotatedP(F, pivot, degrees);
-}
-void Shape::Hexagon::Rotate(float pivotX, float pivotY, float degrees) {
-    Rotate(glm::vec2(pivotX, pivotY), degrees);
-}
-void Shape::Hexagon::Rotate(float degrees) {
-    glm::vec2 center = Center();
-    Rotate(center, degrees);
-}
-
-void Shape::Hexagon::Scale(const glm::vec2& scaler) {
-    glm::vec2 center = Center();
-    A = ScaledP(A, center, scaler);
-    B = ScaledP(B, center, scaler);
-    C = ScaledP(C, center, scaler);
-    D = ScaledP(D, center, scaler);
-    E = ScaledP(E, center, scaler);
-    F = ScaledP(F, center, scaler);
-}
-void Shape::Hexagon::Scale(const glm::vec2& scaler, const glm::vec2& pivot) {
-    A = ScaledP(A, pivot, scaler);
-    B = ScaledP(B, pivot, scaler);
-    C = ScaledP(C, pivot, scaler);
-    D = ScaledP(D, pivot, scaler);
-    E = ScaledP(E, pivot, scaler);
-    F = ScaledP(F, pivot, scaler);
-}
-void Shape::Hexagon::Scale(const glm::vec2& scaler, float pivotX, float pivotY) {
-    Scale(scaler, glm::vec2(pivotX, pivotY));
-}
-void Shape::Hexagon::Scale(float scaleX, float scaleY) {
-    Scale(glm::vec2(scaleX, scaleY));
-}
-void Shape::Hexagon::Scale(float scaleX, float scaleY, const glm::vec2& pivot) {
-    Scale(glm::vec2(scaleX, scaleY), pivot);
-}
-void Shape::Hexagon::Scale(float scaleX, float scaleY, float pivotX, float pivotY) {
-    Scale(glm::vec2(scaleX, scaleY), glm::vec2(pivotX, pivotY));
-}
-
-std::vector<glm::vec2> Shape::Hexagon::PToListVec() {
-    return { A, B, C, D, E, F };
+const unsigned int Shape::Hexagon::pointsSize() const
+{
+    return 6;
 }
 #pragma endregion
 
 #pragma region Polygon
-Shape::Polygon::Polygon() {}
-Shape::Polygon::Polygon(const std::vector<float>& aPoints) 
-{
-    assert(aPoints.size() % 2 == 0);
-    for (int i = 0; i < aPoints.size() - 1; i+=2)
-        points.emplace_back(aPoints[i], aPoints[i + 1]);
+Shape::Polygon::Polygon() = default;
+Shape::Polygon::Polygon(const std::vector<float>& aPoints) {
+    for (int i = 0; i < aPoints.size(); i += 2) 
+        localPoints.push_back(glm::vec2(aPoints[i], aPoints[i + 1]));
+    points = localPoints.data(); 
 }
-Shape::Polygon::Polygon(const std::vector<glm::vec2>& aPoints) : points(aPoints) {}
-
-void Shape::Polygon::Move(const glm::vec2& v) {
-    for (glm::vec2& p : points)
-        p += v;
-}
-void Shape::Polygon::Move(float x, float y) {
-    for (glm::vec2& p : points) 
-    {
-        p.x += x; 
-        p.y += y;
-    }
+Shape::Polygon::Polygon(const std::vector<glm::vec2>& aPoints) {
+    localPoints = aPoints;  
+    points = localPoints.data();  
 }
 
-glm::vec2 Shape::Polygon::Center() {
-    if (points.empty()) return glm::vec2(0.0f, 0.0f);
-
-    glm::vec2 sum(0.0f, 0.0f);
-    for (glm::vec2& p : points)
-        sum += p;
-
-    return sum / (float)points.size();
+const Shape::Types Shape::Polygon::Type() const {
+    return Shape::Types::ShapePolygon;
 }
-
-void Shape::Polygon::Rotate(const glm::vec2& pivot, float degrees) {
-    for (glm::vec2& p : points)
-        p = RotatedP(p, pivot, degrees);
-}
-void Shape::Polygon::Rotate(float pivotX, float pivotY, float degrees) {
-    Rotate(glm::vec2(pivotX, pivotY), degrees);
-}
-void Shape::Polygon::Rotate(float degrees) {
-    glm::vec2 center = Center();
-    Rotate(center, degrees);
-}
-
-void Shape::Polygon::Scale(const glm::vec2& scaler) {
-    glm::vec2 center = Center();
-    for (glm::vec2& p : points)
-        p = ScaledP(p, center, scaler);
-}
-void Shape::Polygon::Scale(const glm::vec2& scaler, const glm::vec2& pivot) {
-    for (glm::vec2& p : points)
-        p = ScaledP(p, pivot, scaler);
-}
-void Shape::Polygon::Scale(const glm::vec2& scaler, float pivotX, float pivotY) {
-    Scale(scaler, glm::vec2(pivotX, pivotY));
-}
-void Shape::Polygon::Scale(float scaleX, float scaleY) {
-    Scale(glm::vec2(scaleX, scaleY));
-}
-void Shape::Polygon::Scale(float scaleX, float scaleY, const glm::vec2& pivot) {
-    Scale(glm::vec2(scaleX, scaleY), pivot);
-}
-void Shape::Polygon::Scale(float scaleX, float scaleY, float pivotX, float pivotY) {
-    Scale(glm::vec2(scaleX, scaleY), glm::vec2(pivotX, pivotY));
-}
-
-std::vector<glm::vec2> Shape::Polygon::PToListVec() {
-    return points;
+const unsigned int Shape::Polygon::pointsSize() const {
+    return localPoints.size(); 
 }
 #pragma endregion
 
 #pragma region Circle
-Shape::Circle::Circle() : O(0.0f, 0.0f), r(0.0f) {}
-Shape::Circle::Circle(float Ox, float Oy, float r) : O(Ox, Oy), r(r) {}
-Shape::Circle::Circle(const glm::vec2& O, float r) : O(O), r(r) {}
-
-void Shape::Circle::Move(const glm::vec2& v) 
-{
-    O += v;
+Shape::Circle::Circle() : O(0.0f, 0.0f), r(0.0f) 
+{ 
+    localPoints[0] = O;
+    points = localPoints;
 }
-void Shape::Circle::Move(float x, float y) 
+Shape::Circle::Circle(float Ox, float Oy, float r) : O(Ox, Oy), r(r) 
 {
-    O.x += x; O.y += y;
+    localPoints[0] = O;
+    points = localPoints;
 }
-
-glm::vec2 Shape::Circle::Center() 
+Shape::Circle::Circle(const glm::vec2& O, float r) : O(O), r(r) 
 {
-    return O;
+    localPoints[0] = O;
+    points = localPoints;
 }
 
-void Shape::Circle::Rotate(const glm::vec2& pivot, float degrees) 
+const Shape::Types Shape::Circle::Type() const
 {
-    O = RotatedP(O, pivot, degrees);
+    return Shape::Types::ShapeCircle;
 }
-void Shape::Circle::Rotate(float pivotX, float pivotY, float degrees) 
+const unsigned int Shape::Circle::pointsSize() const
 {
-    O = RotatedP(O, pivotX, pivotY, degrees);
+    return 1;
 }
 #pragma endregion
 
 #pragma region ScaleCir
 Shape::ScaleCir::ScaleCir() : O(0.0f, 0.0f), r(0), scale(0.0f, 0.0f) {}
 Shape::ScaleCir::ScaleCir(float Ox, float Oy, float r, float scaleX, float scaleY) 
-    : O(Ox, Oy), r(r), scale(scaleX, scaleY) {}
+    : O(Ox, Oy), r(r), scale(scaleX, scaleY)
+{
+    localPoints[0] = O;
+    points = localPoints;
+}
 Shape::ScaleCir::ScaleCir(const glm::vec2& O, float r, float scaleX, float scaleY) 
-    : O(O), r(r), scale(scaleX, scaleY) {}
+    : O(O), r(r), scale(scaleX, scaleY) 
+{
+    localPoints[0] = O;
+    points = localPoints;
+}
 Shape::ScaleCir::ScaleCir(float Ox, float Oy, float r, const glm::vec2& scale) 
-    : O(Ox, Oy), r(r), scale(scale) {}
+    : O(Ox, Oy), r(r), scale(scale) 
+{
+    localPoints[0] = O;
+    points = localPoints;
+}
 Shape::ScaleCir::ScaleCir(const glm::vec2& O, float r, const glm::vec2& scale) 
-    : O(O), r(r), scale(scale) {}
-
-void Shape::ScaleCir::Move(const glm::vec2& v)
+    : O(O), r(r), scale(scale) 
 {
-    O += v;
-}
-void Shape::ScaleCir::Move(float x, float y)
-{
-    O.x += x; O.y += y;
-}
-
-glm::vec2 Shape::ScaleCir::Center()
-{
-    return O;
-}
-
-void Shape::ScaleCir::Rotate(const glm::vec2& pivot, float degrees)
-{
-    O = RotatedP(O, pivot, degrees);
-}
-void Shape::ScaleCir::Rotate(float pivotX, float pivotY, float degrees)
-{
-    O = RotatedP(O, pivotX, pivotY, degrees);
+    localPoints[0] = O;
+    points = localPoints;
 }
 
 void Shape::ScaleCir::Scale(float scaleX, float scaleY) 
@@ -788,5 +489,14 @@ void Shape::ScaleCir::Scale(float scaleX, float scaleY)
 void Shape::ScaleCir::Scale(const glm::vec2& aScale)
 {
     scale *= aScale;
+}
+
+const Shape::Types Shape::Circle::Type() const
+{
+    return Shape::Types::ShapeCircle;
+}
+const unsigned int Shape::Circle::pointsSize() const
+{
+    return 1;
 }
 #pragma endregion

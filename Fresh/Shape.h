@@ -108,6 +108,9 @@ public:
 		AABB(const glm::vec2& A, const glm::vec2& B);
 		AABB(float x1, float y1, float x2, float y2);
 
+		float Width();
+		float Height();
+
 		const Types Type() const override;
 		const unsigned int pointsSize() const override;
 
@@ -194,6 +197,9 @@ public:
 		ScaleCir(const glm::vec2& O, float r, float scaleX, float scaleY);
 		ScaleCir(float Ox, float Oy, float r, const glm::vec2& scale);
 		ScaleCir(const glm::vec2& O, float r, const glm::vec2& scale);
+
+		void Scale(float scaleX, float scaleY);
+		void Scale(const glm::vec2& aScale);
 
 		const Types Type() const override;
 		const unsigned int pointsSize() const override;

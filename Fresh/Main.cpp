@@ -31,9 +31,10 @@ void Start()
 {
     line.Move(100, 100);
     line.Rotate(90);
-    std::array<float, 4> vertices = {
+    std::array<float, 6> vertices = {
         line.points[0].x,line.points[0].y,
         line.points[1].x,line.points[1].y,
+        300, 200
     };
 
     std::array<unsigned int, 4> indices = {0, 1, 1, 2};
