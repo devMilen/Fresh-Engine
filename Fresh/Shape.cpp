@@ -500,3 +500,4 @@ const unsigned int Shape::ScaleCir::pointsSize() const
     return 1;
 }
 #pragma endregion
+
