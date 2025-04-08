@@ -18,7 +18,7 @@ CREATEWINDOW(800, 800) MAIN
 //GOAL: simulate shapes some with sprites(with animations) with collisions reacting to input and UI with sound effects
 // current - Shape class with default shape
 //  next - Transform, Collision, Animation, UI, Sound, some tile system, Physics
-//TODO: update all the other classes and assert what can be called
+//TODO: teeest shape class
 //
 // 
 

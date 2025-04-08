@@ -491,11 +491,11 @@ void Shape::ScaleCir::Scale(const glm::vec2& aScale)
     scale *= aScale;
 }
 
-const Shape::Types Shape::Circle::Type() const
+const Shape::Types Shape::ScaleCir::Type() const
 {
-    return Shape::Types::ShapeCircle;
+    return Shape::Types::ShapeScaleCir;
 }
-const unsigned int Shape::Circle::pointsSize() const
+const unsigned int Shape::ScaleCir::pointsSize() const
 {
     return 1;
 }
