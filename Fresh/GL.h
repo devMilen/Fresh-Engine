@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "glew.h"
 #include "glfw3.h"
 
@@ -125,48 +125,66 @@ void main() {
 	out vec4 finalColor;
 
 	uniform vec4 givenColor;
-	uniform vec3 origin_r;
-	uniform float donutness;
+	uniform vec4 O_r_donutness;
 
 	void main() {
-		vec2 PxPosRel00 = gl_FragCoord.xy - origin_r.xy;
+		finalColor = vec4(0.0);
+
+		vec2 PxPosRel00 = gl_FragCoord.xy - O_r_donutness.xy;
 		float squaredAdded = PxPosRel00.x*PxPosRel00.x + PxPosRel00.y*PxPosRel00.y;
 
-		if(squaredAdded > origin_r.z*origin_r.z) {
-			finalColor = vec4(0.0);
-			return;
-		}
-
-		if(squaredAdded >= donutness*donutness) 
+		if(squaredAdded <= O_r_donutness.z*O_r_donutness.z && squaredAdded >= O_r_donutness.w*O_r_donutness.w) 
 			finalColor = givenColor;
-		else finalColor = vec4(0.0);
 	}
 )"
 
-#define colScaleCir R"(
+#define colScaleCirF R"(
 	#version 330 core
 	out vec4 finalColor;
 
 	uniform vec4 givenColor;
-	uniform vec3 origin_r;
-	uniform float donutness;
+	uniform vec4 O_r_donutness;
 	uniform vec2 scale;
 
 	void main() {
-		vec2 PxPosRel00 = gl_FragCoord.xy - origin_r.xy,
-			scaledPxPosRel00 = vec2(PxPosRel00.x * 1.0/scale.x, PxPosRel00.y * 1.0/scale.y);
-		float squaredAdded = scaledPxPosRel00.x*scaledPxPosRel00.x + scaledPxPosRel00.y*scaledPxPosRel00.y;
+		finalColor = vec4(0.0);
 
-		if(squaredAdded > origin_r.z*origin_r.z) {
-			finalColor = vec4(0.0);
-			return;
-		}
+		vec2 PxPosRel00 = (gl_FragCoord.xy - O_r_donutness.xy) / scale.xy;
+		float squaredAdded = PxPosRel00.x*PxPosRel00.x + PxPosRel00.y*PxPosRel00.y;
 
-		if(squaredAdded >= donutness*donutness) 
+		if(squaredAdded <= O_r_donutness.z*O_r_donutness.z && squaredAdded >= O_r_donutness.w*O_r_donutness.w) 
 			finalColor = givenColor;
-		else finalColor = vec4(0.0);
 	}
 )"
+
+//
+//x' =  x * cos(θ) - y * sin(θ)
+//y' = -x * sin(θ) + y * cos(θ)
+#define colScaleRotCirF R"(
+	#version 330 core
+	out vec4 finalColor;
+
+	uniform vec4 givenColor;
+	uniform vec4 O_r_donutness;
+	uniform vec4 scale_sin_cos;
+
+	void main() {
+		finalColor = vec4(0.0);
+
+		vec2 PxPosRel00 = (gl_FragCoord.xy - O_r_donutness.xy);
+		PxPosRel00 = vec2(
+			PxPosRel00.x * scale_sin_cos.w - PxPosRel00.y * scale_sin_cos.z, 
+			PxPosRel00.x * scale_sin_cos.z + PxPosRel00.y * scale_sin_cos.w
+		);
+		PxPosRel00 /= scale_sin_cos.xy;
+
+		float sqSum = PxPosRel00.x*PxPosRel00.x + PxPosRel00.y*PxPosRel00.y;
+
+		if(sqSum <= O_r_donutness.z*O_r_donutness.z && sqSum >= O_r_donutness.w*O_r_donutness.w) 
+			finalColor = givenColor;
+	}
+)"
+
 
 #define texV R"(
 	#version 330 core

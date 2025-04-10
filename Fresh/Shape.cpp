@@ -1,138 +1,5 @@
 #include "Shape.h"
-
-#pragma region RotatedP and ScaledP
-glm::vec2 Shape::RotatedP(const glm::vec2& P, const glm::vec2& pivot, float degrees)
-{
-    float radians = glm::radians(degrees);
-    glm::mat2 rotationMatrix = glm::mat2(
-        glm::cos(radians), -glm::sin(radians),
-        glm::sin(radians), glm::cos(radians)
-    );
-
-    glm::vec2 translated = P - pivot;
-
-    glm::vec2 rotated = rotationMatrix * translated;
-    rotated += pivot;
-
-    if (glm::abs(rotated.x) < 1e-6) rotated.x = 0.0f;
-    if (glm::abs(rotated.y) < 1e-6) rotated.y = 0.0f;
-
-    return rotated;
-}
-glm::vec2 Shape::RotatedP(float x, float y, const glm::vec2& pivot, float degrees)
-{
-    float radians = glm::radians(degrees);
-    glm::mat2 rotationMatrix = glm::mat2(
-        glm::cos(radians), -glm::sin(radians),
-        glm::sin(radians), glm::cos(radians)
-    );
-
-    glm::vec2 translated(x - pivot.x, y - pivot.y);
-
-    glm::vec2 rotated = rotationMatrix * translated;
-    rotated += pivot;
-
-    if (glm::abs(rotated.x) < 1e-6) rotated.x = 0.0f;
-    if (glm::abs(rotated.y) < 1e-6) rotated.y = 0.0f;
-
-    return rotated;
-}
-glm::vec2 Shape::RotatedP(const glm::vec2& p, float pivotX, float pivotY, float degrees)
-{
-    float radians = glm::radians(degrees);
-    glm::mat2 rotationMatrix = glm::mat2(
-        glm::cos(radians), -glm::sin(radians),
-        glm::sin(radians), glm::cos(radians)
-    );
-
-    glm::vec2 translated(p.x - pivotX, p.y - pivotY);
-
-    glm::vec2 rotated = rotationMatrix * translated;
-    rotated.x += pivotX;
-    rotated.y += pivotY;
-
-    if (glm::abs(rotated.x) < 1e-6) rotated.x = 0.0f;
-    if (glm::abs(rotated.y) < 1e-6) rotated.y = 0.0f;
-
-    return rotated;
-}
-glm::vec2 Shape::RotatedP(float x, float y, float pivotX, float pivotY, float degrees)
-{
-    float radians = glm::radians(degrees);
-    glm::mat2 rotationMatrix = glm::mat2(
-        glm::cos(radians), -glm::sin(radians),
-        glm::sin(radians), glm::cos(radians)
-    );
-
-    glm::vec2 translated(x - pivotX, y - pivotY);
-
-    glm::vec2 rotated = rotationMatrix * translated;
-    rotated.x += pivotX;
-    rotated.y += pivotY;
-
-    if (glm::abs(rotated.x) < 1e-6) rotated.x = 0.0f;
-    if (glm::abs(rotated.y) < 1e-6) rotated.y = 0.0f;
-
-    return rotated;
-}
-
-glm::vec2 Shape::ScaledP(const glm::vec2& p, const glm::vec2& pivot, const glm::vec2& scaler)
-{
-    glm::vec2 translated = p - pivot;
-
-    glm::vec2 scaled = translated * scaler; 
-
-    return scaled + pivot;
-}
-glm::vec2 Shape::ScaledP(float x, float y, const glm::vec2& pivot, const glm::vec2& scaler)
-{
-    glm::vec2 translated(x - pivot.x, y - pivot.y);
-
-    glm::vec2 scaled = translated * scaler;
-
-    return scaled + pivot;
-}
-glm::vec2 Shape::ScaledP(const glm::vec2& p, const glm::vec2& pivot, float scaleX, float scaleY)
-{
-    glm::vec2 translated = p - pivot;
-
-    glm::vec2 scaled = translated * glm::vec2(scaleX, scaleY);
-
-    return scaled + pivot;
-}
-glm::vec2 Shape::ScaledP(float x, float y, const glm::vec2& pivot, float scaleX, float scaleY)
-{
-    glm::vec2 translated(x - pivot.x, y - pivot.y);
-
-    glm::vec2 scaled = translated * glm::vec2(scaleX, scaleY);
-
-    return scaled + pivot;
-}
-glm::vec2 Shape::ScaledP(float x, float y, float pivotX, float pivotY, float scaleX, float scaleY)
-{
-    glm::vec2 translated(x - pivotX, y - pivotY);
-
-    glm::vec2 scaled = translated * glm::vec2(scaleX, scaleY);
-
-    return glm::vec2(scaled.x + pivotX, scaled.y + pivotY);
-}
-glm::vec2 Shape::ScaledP(const glm::vec2& p, float pivotX, float pivotY, float scaleX, float scaleY)
-{
-    glm::vec2 translated(p.x - pivotX, p.y - pivotY);
-
-    glm::vec2 scaled = translated * glm::vec2(scaleX, scaleY);
-
-    return glm::vec2(scaled.x + pivotX, scaled.y + pivotY);
-}
-glm::vec2 Shape::ScaledP(const glm::vec2& p, float pivotX, float pivotY, const glm::vec2& scale)
-{
-    glm::vec2 translated(p.x - pivotX, p.y - pivotY);
-
-    glm::vec2 scaled = translated * scale;
-
-    return glm::vec2(scaled.x + pivotX, scaled.y + pivotY);
-}
-#pragma endregion
+#include "Transform.h"
 
 #pragma region Def
 void Shape::Def::Move(const glm::vec2& v)
@@ -163,7 +30,7 @@ glm::vec2 Shape::Def::Center() {
 void Shape::Def::Rotate(const glm::vec2& pivot, float degrees) {
     const short size = pointsSize(); 
     for(int i = 0; i < size; i++)
-        points[i] = Shape::RotatedP(points[i], pivot, degrees);
+        points[i] = Transform::RotatedP(points[i], pivot, degrees);
 }
 void Shape::Def::Rotate(float pivotX, float pivotY, float degrees) {
     Rotate(glm::vec2(pivotX, pivotY), degrees);
@@ -180,7 +47,7 @@ void Shape::Def::Scale(const glm::vec2& scaler, const glm::vec2& pivot)
 {
     const short size = pointsSize(); 
     for(int i = 0; i < size; i++)
-        points[i] = Shape::ScaledP(points[i], pivot, scaler);
+        points[i] = Transform::ScaledP(points[i], pivot, scaler);
 }
 void Shape::Def::Scale(const glm::vec2& scaler, float pivotX, float pivotY) 
 {
@@ -428,17 +295,17 @@ const unsigned int Shape::Polygon::pointsSize() const {
 #pragma endregion
 
 #pragma region Circle
-Shape::Circle::Circle() : O(0.0f, 0.0f), r(0.0f) 
+Shape::Circle::Circle() : r(0.0f) 
 { 
-    localPoints[0] = O;
+    localPoints[0] = glm::vec2(0);
     points = localPoints;
 }
-Shape::Circle::Circle(float Ox, float Oy, float r) : O(Ox, Oy), r(r) 
+Shape::Circle::Circle(float Ox, float Oy, float r) : r(r) 
 {
-    localPoints[0] = O;
+    localPoints[0] = glm::vec2(Ox, Oy);
     points = localPoints;
 }
-Shape::Circle::Circle(const glm::vec2& O, float r) : O(O), r(r) 
+Shape::Circle::Circle(const glm::vec2& O, float r) : r(r) 
 {
     localPoints[0] = O;
     points = localPoints;
@@ -453,51 +320,3 @@ const unsigned int Shape::Circle::pointsSize() const
     return 1;
 }
 #pragma endregion
-
-#pragma region ScaleCir
-Shape::ScaleCir::ScaleCir() : O(0.0f, 0.0f), r(0), scale(0.0f, 0.0f) {}
-Shape::ScaleCir::ScaleCir(float Ox, float Oy, float r, float scaleX, float scaleY) 
-    : O(Ox, Oy), r(r), scale(scaleX, scaleY)
-{
-    localPoints[0] = O;
-    points = localPoints;
-}
-Shape::ScaleCir::ScaleCir(const glm::vec2& O, float r, float scaleX, float scaleY) 
-    : O(O), r(r), scale(scaleX, scaleY) 
-{
-    localPoints[0] = O;
-    points = localPoints;
-}
-Shape::ScaleCir::ScaleCir(float Ox, float Oy, float r, const glm::vec2& scale) 
-    : O(Ox, Oy), r(r), scale(scale) 
-{
-    localPoints[0] = O;
-    points = localPoints;
-}
-Shape::ScaleCir::ScaleCir(const glm::vec2& O, float r, const glm::vec2& scale) 
-    : O(O), r(r), scale(scale) 
-{
-    localPoints[0] = O;
-    points = localPoints;
-}
-
-void Shape::ScaleCir::Scale(float scaleX, float scaleY) 
-{
-    scale.x *= scaleX;
-    scale.y *= scaleY;
-}
-void Shape::ScaleCir::Scale(const glm::vec2& aScale)
-{
-    scale *= aScale;
-}
-
-const Shape::Types Shape::ScaleCir::Type() const
-{
-    return Shape::Types::ShapeScaleCir;
-}
-const unsigned int Shape::ScaleCir::pointsSize() const
-{
-    return 1;
-}
-#pragma endregion
-

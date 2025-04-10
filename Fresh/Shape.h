@@ -1,4 +1,3 @@
-//consider implementing an actual Shape default class like an interface
 #pragma once
 #include "glew.h"
 #include "glfw3.h"
@@ -12,25 +11,10 @@
 class Shape
 {
 public:
-#pragma region RotatedP and ScaledP delcs
-	static glm::vec2 RotatedP(const glm::vec2& p, const glm::vec2& pivot, float degrees);
-	static glm::vec2 RotatedP(float x, float y, const glm::vec2& pivot, float degrees);
-	static glm::vec2 RotatedP(const glm::vec2& p, float pivotX, float pivotY, float degrees);
-	static glm::vec2 RotatedP(float x, float y, float pivotX, float pivotY, float degrees);
-
-	static glm::vec2 ScaledP(const glm::vec2& p, const glm::vec2& pivot, const glm::vec2& scaler);
-	static glm::vec2 ScaledP(float x, float y, const glm::vec2& pivot, const glm::vec2& scaler);
-	static glm::vec2 ScaledP(const glm::vec2& p, const glm::vec2& pivot, float scaleX, float scaleY);
-	static glm::vec2 ScaledP(float x, float y, const glm::vec2& pivot, float scaleX, float scaleY);
-	static glm::vec2 ScaledP(float x, float y, float pivotX, float pivotY, float scaleX, float scaleY);
-	static glm::vec2 ScaledP(const glm::vec2& p, float pivotX, float pivotY, float scaleX, float scaleY);
-	static glm::vec2 ScaledP(const glm::vec2& p, float pivotX, float pivotY, const glm::vec2& scale);
-#pragma endregion
-
 	enum Types {
 		ShapeNone = 0, ShapeDef = 1, ShapeLine = 2, ShapeTriangle = 3,
 		ShapeBox = 4, ShapePentagon = 5, ShapeHexagon = 6, ShapeAABB = 7,
-		ShapePolygon = 8, ShapeCircle = 9, ShapeScaleCir = 10
+		ShapePolygon = 8, ShapeCircle = 9, ShapeEllipse = 10
 	};
 
 	class Def {
@@ -171,35 +155,11 @@ public:
 	class Circle : public Def
 	{
 	public:
-		glm::vec2 O;
 		float r;
 
 		Circle();
 		Circle(float Ox, float Oy, float r);
 		Circle(const glm::vec2& O, float r);
-
-		const Types Type() const override;
-		const unsigned int pointsSize() const override;
-
-	private:
-		glm::vec2 localPoints[1];
-	};
-
-	class ScaleCir : public Def
-	{
-	public:
-
-		glm::vec2 O, scale;
-		float r;
-
-		ScaleCir();
-		ScaleCir(float Ox, float Oy, float r, float scaleX, float scaleY);
-		ScaleCir(const glm::vec2& O, float r, float scaleX, float scaleY);
-		ScaleCir(float Ox, float Oy, float r, const glm::vec2& scale);
-		ScaleCir(const glm::vec2& O, float r, const glm::vec2& scale);
-
-		void Scale(float scaleX, float scaleY);
-		void Scale(const glm::vec2& aScale);
 
 		const Types Type() const override;
 		const unsigned int pointsSize() const override;

@@ -52,4 +52,10 @@ public:
     void RenderLine(float r, float g, float b, float a, float width = 1.0f);
     void RenderLineS(float width = 1.0f);
     void RenderLineS(float r, float g, float b, float a, float width = 1.0f);
+
+    void RenderCir(float r, float g, float b, float a, float radius, const glm::vec2& O, float donutness = 0, const glm::vec2& scale = glm::vec2(0), float rotation = 0.0f);
+    void RenderCir(float r, float g, float b, float a, float radius, float Ox, float Oy, float donutness = 0, float scaleX = 1.0f, float scaleY = 1.0f, float rotation = 0.0f);
+    void RenderCir(float r, float g, float b, float a, float radius, const glm::vec2& O, float donutness = 0, float scaleX = 1.0f, float scaleY = 1.0f, float rotation = 0.0f);
+    void RenderCir(float r, float g, float b, float a, float radius, float Ox, float Oy, float donutness = 0, const glm::vec2& scale = glm::vec2(0), float rotation = 0.0f);
+
 };
