@@ -328,38 +328,3 @@ void Transform::SetMat(glm::mat4& mat)
     mat = glm::rotate(mat, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
     mat = glm::scale(mat, glm::vec3(scale.x, scale.y, 1.0f));
 }
-void Transform::SetMat(glm::mat4& mat, const Transform& initTransform)
-{
-    mat = glm::ortho(0.0f, (float)WINDOW_WIDTH, (float)WINDOW_HEIGHT, 0.0f);
-    mat = glm::translate(mat, glm::vec3(pos.x - initTransform.pos.x, pos.y - initTransform.pos.y, 0.0f));
-    mat = glm::rotate(mat, glm::radians(rotation - initTransform.rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-    mat = glm::scale(mat, glm::vec3(scale.x / initTransform.scale.x, scale.y / initTransform.scale.y, 1.0f));
-}
-void Transform::SetMat(glm::mat4& mat, const glm::vec2& initpos, float initrotation, const glm::vec2& initscale)
-{
-    mat = glm::ortho(0.0f, (float)WINDOW_WIDTH, (float)WINDOW_HEIGHT, 0.0f);
-    mat = glm::translate(mat, glm::vec3(pos.x - initpos.x, pos.y - initpos.y, 0.0f));
-    mat = glm::rotate(mat, glm::radians(rotation - initrotation), glm::vec3(0.0f, 0.0f, 1.0f));
-    mat = glm::scale(mat, glm::vec3(scale.x / initscale.x, scale.y / initscale.y, 1.0f));
-}
-void Transform::SetMat(glm::mat4& mat, const glm::vec2& initpos, float initrotation, float initscaleX, float initscaleY)
-{
-    mat = glm::ortho(0.0f, (float)WINDOW_WIDTH, (float)WINDOW_HEIGHT, 0.0f);
-    mat = glm::translate(mat, glm::vec3(pos.x - initpos.x, pos.y - initpos.y, 0.0f));
-    mat = glm::rotate(mat, glm::radians(rotation - initrotation), glm::vec3(0.0f, 0.0f, 1.0f));
-    mat = glm::scale(mat, glm::vec3(scale.x / initscaleX, scale.y / initscaleY, 1.0f));
-}
-void Transform::SetMat(glm::mat4& mat, float initposX, float initposY, float initrotation, const glm::vec2& initscale)
-{
-    mat = glm::ortho(0.0f, (float)WINDOW_WIDTH, (float)WINDOW_HEIGHT, 0.0f);
-    mat = glm::translate(mat, glm::vec3(pos.x - initposX, pos.y - initposY, 0.0f));
-    mat = glm::rotate(mat, glm::radians(rotation - initrotation), glm::vec3(0.0f, 0.0f, 1.0f));
-    mat = glm::scale(mat, glm::vec3(scale.x / initscale.x, scale.y / initscale.y, 1.0f));
-}
-void Transform::SetMat(glm::mat4& mat, float initposX, float initposY, float initrotation, float initscaleX, float initscaleY)
-{
-    mat = glm::ortho(0.0f, (float)WINDOW_WIDTH, (float)WINDOW_HEIGHT, 0.0f);
-    mat = glm::translate(mat, glm::vec3(pos.x - initposX, pos.y - initposY, 0.0f));
-    mat = glm::rotate(mat, glm::radians(rotation - initrotation), glm::vec3(0.0f, 0.0f, 1.0f));
-    mat = glm::scale(mat, glm::vec3(scale.x / initscaleX, scale.y / initscaleY, 1.0f));
-}

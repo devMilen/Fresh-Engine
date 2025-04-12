@@ -74,11 +74,6 @@ public:
 	static std::array<unsigned int, 6> IndicesFor(const Shape::Circle& cir);
 
 	void SetMat(glm::mat4& mat);
-	void SetMat(glm::mat4& mat, const Transform& initTransform);
-	void SetMat(glm::mat4& mat, const glm::vec2& initpos, float initrotation = 0, const glm::vec2& initscale = glm::vec2(0));
-	void SetMat(glm::mat4& mat, const glm::vec2& initpos, float initrotation = 0, float initscaleX = 0, float initscaleY = 0);
-	void SetMat(glm::mat4& mat, float initposX, float initposy,float initrotation = 0, const glm::vec2& initscale = glm::vec2(0));
-	void SetMat(glm::mat4& mat, float initposX, float initposy, float initrotation = 0,float initscaleX = 0, float initscaleY = 0);
 };
 
 
