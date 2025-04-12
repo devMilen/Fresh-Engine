@@ -15,7 +15,7 @@ public:
     Sprite();
 
     template <class VertexArr, class IndexArr>
-    Sprite(const VertexArr& vertices, const IndexArr& indices, bool isStatic, 
+    Sprite(const VertexArr& vertices, const IndexArr& indices, bool isStatic,
         const char* vertexShader, const char* fragmentShader, const char* filePath, bool flipVerticaly = true, const glm::mat4& mat = glm::mat4(1.0),
         unsigned int pLoc = 0, unsigned int pflPerVertex = 2, unsigned int pstride = 0, unsigned int pbeginOffset = 0,
         unsigned int pLoc2 = 0, unsigned int pflPerVertex2 = 2, unsigned int pstride2 = 0, unsigned int pbeginOffset2 = 0, unsigned int indicesSize = 6
@@ -57,5 +57,4 @@ public:
     void RenderCir(float r, float g, float b, float a, float radius, float Ox, float Oy, float donutness = 0, float scaleX = 1.0f, float scaleY = 1.0f, float rotation = 0.0f);
     void RenderCir(float r, float g, float b, float a, float radius, const glm::vec2& O, float donutness = 0, float scaleX = 1.0f, float scaleY = 1.0f, float rotation = 0.0f);
     void RenderCir(float r, float g, float b, float a, float radius, float Ox, float Oy, float donutness = 0, const glm::vec2& scale = glm::vec2(0), float rotation = 0.0f);
-
 };
