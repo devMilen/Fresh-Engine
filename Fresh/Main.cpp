@@ -17,17 +17,14 @@ CREATEWINDOW(WINDOW_WIDTH, WINDOW_HEIGHT) MAIN
 //TODO: teeest shape and transform
 //render each shape transformed 
 //render each shape with texture transformed 
-//                 
+//now when V workin - Collisions
 
-Transform transform(300, 300, 30, 1, 1);
-Shape::Box poly(-100, -100, -100, 100, 100, 100, 100, -100);
+Transform transform(300, 300, -30, 2, 1);
+Shape::AABB poly(-100, -100, 100, 100);
 Sprite polySprite(Transform::VerticesFor(poly), Transform::IndicesFor(poly),
 	true, matOffV, colF, "", false, glm::ortho(0.0f, (float)WINDOW_WIDTH, (float)WINDOW_HEIGHT, 0.0f));
 
-void Start() 
-{
-	
-}
+void Start() {}
 
 void Update()
 {
