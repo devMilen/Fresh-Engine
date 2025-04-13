@@ -245,49 +245,43 @@ std::array<float, 8> Transform::VerticesFor(const Shape::Circle& cir)
     };
 }
 
-std::array<float, 12> VerticesFor(const Shape::Triangle& triangle, bool rot90)
+std::array<float, 16> Transform::VerticesFor(const Shape::Box& box, bool rot90)
 {
-    if (!rot90) return std::array<float, 12> {
-            triangle.points[0].x, triangle.points[0].y, 0.0f, 0.0f,
-            triangle.points[1].x, triangle.points[1].y, 1.0f, 0.0f,
-            triangle.points[2].x, triangle.points[2].y, 0.5f, 1.0f
+    if (!rot90) {
+        return std::array<float, 16> {
+            box.points[0].x, box.points[0].y, POSITIONS_1,
+                box.points[1].x, box.points[1].y, POSITIONS_2,
+                box.points[2].x, box.points[2].y, POSITIONS_3,
+                box.points[3].x, box.points[3].y, POSITIONS_5
         };
-    else return std::array<float, 12> {
-            triangle.points[0].x, triangle.points[0].y, 0.0f, 0.0f,
-            triangle.points[1].x, triangle.points[1].y, 1.0f, 0.0f,
-            triangle.points[2].x, triangle.points[2].y, 0.5f, 1.0f
+    }
+    else {
+        return std::array<float, 16> {
+            box.points[0].x, box.points[0].y, POSITIONS_1,
+                box.points[1].x, box.points[1].y, POSITIONS_2_90,
+                box.points[2].x, box.points[2].y, POSITIONS_3,
+                box.points[3].x, box.points[3].y, POSITIONS_5_90
         };
-
+    }
 }
-std::array<float, 16> VerticesFor(const Shape::Box& box, bool rot90) 
+std::array<float, 16> Transform::VerticesFor(const Shape::AABB& aabb, bool rot90)
 {
-    if (!rot90) return std::array<float, 16> {
-            box.points[0].x, box.points[0].y, POSITIONS_1
-            box.points[1].x, box.points[1].y, POSITIONS_2
-            box.points[2].x, box.points[2].y, POSITIONS_3
-            box.points[3].x, box.points[3].y, POSITIONS_5
+    if (!rot90) {
+        return std::array<float, 16> {
+            aabb.points[0].x, aabb.points[0].y, POSITIONS_1,
+                aabb.points[0].x, aabb.points[1].y, POSITIONS_2,
+                aabb.points[1].x, aabb.points[1].y, POSITIONS_3,
+                aabb.points[1].x, aabb.points[0].y, POSITIONS_5
         };
-    else return std::array<float, 16> {
-            box.points[0].x, box.points[0].y, POSITIONS_1
-            box.points[1].x, box.points[1].y, POSITIONS_2_90
-            box.points[2].x, box.points[2].y, POSITIONS_3
-            box.points[3].x, box.points[3].y, POSITIONS_5_90
+    }
+    else {
+        return std::array<float, 16> {
+            aabb.points[0].x, aabb.points[0].y, POSITIONS_1,
+                aabb.points[0].x, aabb.points[1].y, POSITIONS_2_90,
+                aabb.points[1].x, aabb.points[1].y, POSITIONS_3,
+                aabb.points[1].x, aabb.points[0].y, POSITIONS_5_90
         };
-}
-std::array<float, 16> VerticesFor(const Shape::AABB& aabb, bool rot90) 
-{
-    if (!rot90) return std::array<float, 16> {
-            aabb.points[0].x, aabb.points[0].y, POSITIONS_1
-            aabb.points[0].x, aabb.points[1].y, POSITIONS_2
-            aabb.points[1].x, aabb.points[1].y, POSITIONS_3
-            aabb.points[1].x, aabb.points[0].y, POSITIONS_5
-        };
-    else return std::array<float, 16> {
-            aabb.points[0].x, aabb.points[0].y, POSITIONS_1
-            aabb.points[0].x, aabb.points[1].y, POSITIONS_2_90
-            aabb.points[1].x, aabb.points[1].y, POSITIONS_3
-            aabb.points[1].x, aabb.points[0].y, POSITIONS_5_90
-        };
+    }
 }
 
 std::array<unsigned int, 6> Transform::IndicesFor(const Shape::Box& box)
@@ -325,6 +319,6 @@ void Transform::SetMat(glm::mat4& mat)
 {
     mat = glm::ortho(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT);
     mat = glm::translate(mat, glm::vec3(pos.x, pos.y, 0.0f));
-    mat = glm::rotate(mat, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
     mat = glm::scale(mat, glm::vec3(scale.x, scale.y, 1.0f));
+    mat = glm::rotate(mat, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 }

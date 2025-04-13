@@ -217,7 +217,7 @@ void main() {
 	layout (location = 1) in vec2 givenTexCoord;		
 
 	out vec2 texCoord;	
-	uniform vec2 offset;
+	uniform vec2 offset = vec2(0.0);
 	uniform mat4 mat = mat4(
 		1.0, 0.0, 0.0, 0.0,  
 		0.0, 1.0, 0.0, 0.0,  

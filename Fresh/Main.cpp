@@ -6,30 +6,31 @@
 #include "Shape.h"
 #include "Transform.h"
 #include <iostream>
+
 CREATEWINDOW(WINDOW_WIDTH, WINDOW_HEIGHT) MAIN
 
 //GOAL: simulate shapes render them (with animations) with collisions reacting to input and UI with sound effects
 // 
-//consider implement local and global space in Transform
-// 
-//current - Collision, Animation, UI, Sound, some tile system, Physics
-// 
+//sometime - fix full screen bug
+//
 //TODO:
-//render each shape transformed 
 //render each shape with texture transformed 
 //now when V workin - Collisions
 
-Transform transform(300, 300, 0, 2, 1);
-Shape::Circle shape(100);
-Sprite shapeSprite(Transform::VerticesFor(shape), Transform::IndicesFor(shape),
-	true, matOffV, colScaleRotCirF, "", false, glm::ortho(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT));
+Transform transform(300, 500, 0, 1, 1);
+Shape::AABB shape(-100, 100, 100, -100);
+Sprite shapeSprite(Transform::VerticesFor(shape, false), Transform::IndicesFor(shape),
+	false, texV, texF, "C:/Users/User/Desktop/sprites/2048_blocks/block_64.png",
+	false, glm::ortho(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT), 0, 2, 4, 0, 1, 2, 4, 2, 12);
 
 void Start() {}
 
 void Update()
 {
-	transform.pos += glm::vec2(50.0f * Time::dt, 0);
-	transform.rotation += -0.5f;
-	shapeSprite.RenderCir(1, 1, 0, 1, shape.r, 50, transform);
+	transform.pos.x++;
+	transform.rotation += -0.5f*60* Time::dt;
+
+	transform.SetMat(shapeSprite.mat);
+	shapeSprite.Render();
 }
 

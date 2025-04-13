@@ -8,13 +8,13 @@
 #define RELEASE 0
 #define PRESS 1
 #define HOLD 2
-#define POSITIONS_1    0.0f, 1.0f,
-#define POSITIONS_2    1.0f, 1.0f,
-#define POSITIONS_2_90 0.0f, 0.0f,
-#define POSITIONS_3    1.0f, 0.0f,
-#define POSITIONS_4    1.0f, 0.0f,
-#define POSITIONS_5    0.0f, 0.0f,
-#define POSITIONS_5_90 1.0f, 1.0f,
+#define POSITIONS_1    0.0f, 1.0f
+#define POSITIONS_2    1.0f, 1.0f
+#define POSITIONS_2_90 0.0f, 0.0f
+#define POSITIONS_3    1.0f, 0.0f
+#define POSITIONS_4    1.0f, 0.0f
+#define POSITIONS_5    0.0f, 0.0f
+#define POSITIONS_5_90 1.0f, 1.0f
 #define POSITIONS_6    0.0f, 1.0f
 #define Pi 3.141592
 #define Rad 0.017453
