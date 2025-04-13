@@ -65,6 +65,21 @@ void Shape::Def::Scale(float scaleX, float scaleY, float pivotX, float pivotY)
 {
     Scale(glm::vec2(scaleX, scaleY), glm::vec2(pivotX, pivotY));
 }
+
+void Shape::Def::InitRegular(const glm::vec2& A, const glm::vec2& pivot) 
+{
+    points[0] = A;
+    const float fpointsSize = pointsSize();
+    for (int i = 1; i < fpointsSize; i++)
+        points[i] = Transform::RotatedP(A, pivot, i * (360.0f / fpointsSize));
+}
+void Shape::Def::InitRegular(float Ax, float Ay, float pivotX, float pivotY) 
+{
+    points[0].x = Ax; points[0].y = Ay;
+    const float fpointsSize = pointsSize();
+    for (int i = 1; i < fpointsSize; i++)
+        points[i] = Transform::RotatedP(Ax, Ay, pivotX, pivotY, i * (360.0f / fpointsSize));
+}
 #pragma endregion
 
 #pragma region Line
@@ -131,6 +146,16 @@ Shape::Box::Box() {
     localPoints[2] = glm::vec2(0);
     localPoints[3] = glm::vec2(0);
     points = localPoints;
+}
+Shape::Box::Box(const glm::vec2& A, const glm::vec2& pivot) 
+{
+    points = localPoints;
+    InitRegular(A, pivot);
+}
+Shape::Box::Box(float Ax, float Ay, float pivotX, float pivotY) 
+{
+    points = localPoints;
+    InitRegular(Ax, Ay, pivotX, pivotY);
 }
 Shape::Box::Box(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C, 
 const glm::vec2& D) {
@@ -204,6 +229,16 @@ Shape::Pentagon::Pentagon() {
     localPoints[4] = glm::vec2(0);
     points = localPoints;
 }
+Shape::Pentagon::Pentagon(const glm::vec2& A, const glm::vec2& pivot)
+{
+    points = localPoints;
+    InitRegular(A, pivot);
+}
+Shape::Pentagon::Pentagon(float Ax, float Ay, float pivotX, float pivotY)
+{
+    points = localPoints;
+    InitRegular(Ax, Ay, pivotX, pivotY);
+}
 Shape::Pentagon::Pentagon(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C,
     const glm::vec2& D, const glm::vec2& E) {
     localPoints[0] = A;
@@ -243,6 +278,16 @@ Shape::Hexagon::Hexagon() {
     localPoints[5] = glm::vec2(0);
     points = localPoints;
 }
+Shape::Hexagon::Hexagon(const glm::vec2& A, const glm::vec2& pivot)
+{
+    points = localPoints;
+    InitRegular(A, pivot);
+}
+Shape::Hexagon::Hexagon(float Ax, float Ay, float pivotX, float pivotY)
+{
+    points = localPoints;
+    InitRegular(Ax, Ay, pivotX, pivotY);
+}
 Shape::Hexagon::Hexagon(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C,
 const glm::vec2& D, const glm::vec2& E, const glm::vec2& F) {
     localPoints[0] = A;
@@ -276,6 +321,18 @@ const unsigned int Shape::Hexagon::pointsSize() const
 
 #pragma region Polygon
 Shape::Polygon::Polygon() = default;
+Shape::Polygon::Polygon(const glm::vec2& A, const glm::vec2& pivot, unsigned int pointsSize)
+{
+    localPoints.resize(pointsSize);
+    points = localPoints.data();
+    InitRegular(A, pivot);
+}
+Shape::Polygon::Polygon(float Ax, float Ay, float pivotX, float pivotY, unsigned int pointsSize)
+{
+    localPoints.resize(pointsSize);
+    points = localPoints.data();
+    InitRegular(Ax, Ay, pivotX, pivotY);
+}
 Shape::Polygon::Polygon(const std::vector<float>& aPoints) {
     for (int i = 0; i < aPoints.size(); i += 2) 
         localPoints.push_back(glm::vec2(aPoints[i], aPoints[i + 1]));
@@ -297,6 +354,11 @@ const unsigned int Shape::Polygon::pointsSize() const {
 #pragma region Circle
 Shape::Circle::Circle() : r(0.0f) 
 { 
+    localPoints[0] = glm::vec2(0);
+    points = localPoints;
+}
+Shape::Circle::Circle(float r) : r(r)
+{
     localPoints[0] = glm::vec2(0);
     points = localPoints;
 }

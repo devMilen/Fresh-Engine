@@ -157,9 +157,6 @@ void main() {
 	}
 )"
 
-//
-//x' =  x * cos(θ) - y * sin(θ)
-//y' = -x * sin(θ) + y * cos(θ)
 #define colScaleRotCirF R"(
 	#version 330 core
 	out vec4 finalColor;
@@ -185,6 +182,33 @@ void main() {
 	}
 )"
 
+#define OptimizedcolScaleRotCirF R"(
+	#version 330 core
+	out vec4 finalColor;
+	
+	uniform vec4 givenColor;
+	uniform vec4 O_r_donutness;
+	uniform vec4 scale_sin_cos;
+	
+	void main() {
+	    finalColor = vec4(0.0);
+	
+	    vec2 PxPosRel00 = gl_FragCoord.xy - O_r_donutness.xy;
+	    float xRot = PxPosRel00.x * scale_sin_cos.w - PxPosRel00.y * scale_sin_cos.z;
+	    float yRot = PxPosRel00.x * scale_sin_cos.z + PxPosRel00.y * scale_sin_cos.w;
+	
+	    PxPosRel00 = vec2(xRot, yRot) / scale_sin_cos.xy;
+	
+	    float sqSum = dot(PxPosRel00, PxPosRel00);
+	
+	    float outerRadiusSquared = O_r_donutness.z * O_r_donutness.z;
+	    float innerRadiusSquared = O_r_donutness.w * O_r_donutness.w;
+	
+	    if(sqSum <= outerRadiusSquared && sqSum >= innerRadiusSquared) {
+	        finalColor = givenColor;
+	    }
+	}
+)"
 
 #define texV R"(
 	#version 330 core

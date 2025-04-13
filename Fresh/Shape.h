@@ -36,6 +36,9 @@ public:
 		void Scale(float scaleX, float scaleY); 
 		void Scale(float scaleX, float scaleY, const glm::vec2& pivot); 
 		void Scale(float scaleX, float scaleY, float pivotX, float pivotY); 
+
+		void InitRegular(const glm::vec2& A, const glm::vec2& pivot);
+		void InitRegular(float Ax, float Ay, float pivotX, float pivotY);
 		
 		virtual ~Def() = default;
 
@@ -75,6 +78,8 @@ public:
 	{
 	public:
 		Box();
+		Box(const glm::vec2& A, const glm::vec2& pivot);
+		Box(float Ax, float Ay, float pivotX, float pivotY);
 		Box(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C, const glm::vec2& D);
 		Box(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
 
@@ -106,6 +111,8 @@ public:
 	{
 	public:
 		Pentagon();
+		Pentagon(const glm::vec2& A, const glm::vec2& pivot);
+		Pentagon(float Ax, float Ay, float pivotX, float pivotY);
 		Pentagon(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C, 
 			const glm::vec2& D, const glm::vec2& E);
 		Pentagon(float x1, float y1, float x2, float y2, float x3, float y3,
@@ -142,6 +149,8 @@ public:
 	{
 	public:
 		Polygon();
+		Polygon(const glm::vec2& A, const glm::vec2& pivot, unsigned int pointsSize);
+		Polygon(float Ax, float Ay, float pivotX, float pivotY, unsigned int pointsSize);
 		Polygon(const std::vector<float>& aPoints);
 		Polygon(const std::vector<glm::vec2>& aPoints);
 
@@ -159,6 +168,7 @@ public:
 
 		Circle();
 		Circle(float Ox, float Oy, float r);
+		Circle(float r);
 		Circle(const glm::vec2& O, float r);
 
 		const Types Type() const override;
