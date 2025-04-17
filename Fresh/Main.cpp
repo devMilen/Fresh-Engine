@@ -6,31 +6,28 @@
 #include "Shape.h"
 #include "Transform.h"
 #include <iostream>
+#include "Collision.h"
 
 CREATEWINDOW(WINDOW_WIDTH, WINDOW_HEIGHT) MAIN
 
 //GOAL: simulate shapes render them (with animations) with collisions reacting to input and UI with sound effects
-// 
-//sometime - fix full screen bug
 //
-//TODO:
-//render each shape with texture transformed 
-//now when V workin - Collisions
+//TODO: test collision class, then Animation class
 
-Transform transform(300, 500, 0, 1, 1);
-Shape::AABB shape(-100, 100, 100, -100);
-Sprite shapeSprite(Transform::VerticesFor(shape, false), Transform::IndicesFor(shape),
-	false, texV, texF, "C:/Users/User/Desktop/sprites/2048_blocks/block_64.png",
-	false, glm::ortho(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT), 0, 2, 4, 0, 1, 2, 4, 2, 12);
+Transform shapeTransform(350, 600, 0, 1, 1);
+Shape::Box shape(-100, 100, 0, 0);
+Sprite shapeSprite(Transform::VerticesFor(shape, false), Transform::IndicesFor(shape), false,
+	texV, texF, "C:/Users/User/Desktop/sprites/FlappyBirdSprites/flappy_bird_sprite_noBG.png",
+	true, glm::ortho(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT), 0, 2, 4, 0, 1, 2, 4, 2);
 
-void Start() {}
+void Start() 
+{
+	shapeTransform.rotation += 30.0f;
+}
 
 void Update()
 {
-	transform.pos.x++;
-	transform.rotation += -0.5f*60* Time::dt;
-
-	transform.SetMat(shapeSprite.mat);
+	shapeTransform.SetMat(shapeSprite.mat);
 	shapeSprite.Render();
 }
 

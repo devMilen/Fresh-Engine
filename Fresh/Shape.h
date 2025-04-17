@@ -14,7 +14,7 @@ public:
 	enum Types {
 		ShapeNone = 0, ShapeDef = 1, ShapeLine = 2, ShapeTriangle = 3,
 		ShapeBox = 4, ShapePentagon = 5, ShapeHexagon = 6, ShapeAABB = 7,
-		ShapePolygon = 8, ShapeCircle = 9, ShapeEllipse = 10
+		ShapePolygon = 8, ShapeCircle = 9
 	};
 
 	class Def {
