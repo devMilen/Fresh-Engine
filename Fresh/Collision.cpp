@@ -185,19 +185,34 @@ bool Collision::CheckScaleCir(Shape::Def* shape, const Shape::Circle& cir, const
     model = glm::scale(model, glm::vec3(cirTransform.scale * cir.r, 1.0f));
 
     glm::mat4 invModel = glm::inverse(model);
+    const unsigned int count = shape->pointsSize();
 
-    for (unsigned int i = 0; i < shape->pointsSize(); ++i)
+    for (unsigned int i = 0; i < count; ++i)
     {
-        glm::vec2 worldPoint = shape->points[i];
+        glm::vec2 p1_world = shape->points[i];
+        glm::vec2 p2_world = shape->points[(i + 1) % count]; // Wrap around
 
-        glm::vec4 localPoint4 = invModel * glm::vec4(worldPoint, 0.0f, 1.0f);
-        glm::vec2 localPoint = glm::vec2(localPoint4);
+        glm::vec2 p1_local = glm::vec2(invModel * glm::vec4(p1_world, 0.0f, 1.0f));
+        glm::vec2 p2_local = glm::vec2(invModel * glm::vec4(p2_world, 0.0f, 1.0f));
 
-        if (glm::dot(localPoint, localPoint) <= 1.0f)
+        if (glm::dot(p1_local, p1_local) <= 1.0f || glm::dot(p2_local, p2_local) <= 1.0f)
+            return true;
+
+        glm::vec2 edge = p2_local - p1_local;
+        glm::vec2 toCenter = -p1_local;
+
+        float t = glm::dot(toCenter, edge) / glm::dot(edge, edge);
+        t = glm::clamp(t, 0.0f, 1.0f);
+
+        glm::vec2 closest = p1_local + t * edge;
+
+        if (glm::dot(closest, closest) <= 1.0f)
             return true;
     }
-    return false; 
+
+    return false;
 }
+
 bool Collision::CheckScaleCir(Shape::Def* shape, const Transform& shapeTransform, const Shape::Circle& cir, const Transform& cirTransform)
 {
     shape->Move(shapeTransform.pos);
