@@ -9,36 +9,46 @@
 #include "Collision.h"
 #include "Animation.h"
 #include "Print.h"
+#include "Sound.h"
 
 CREATEWINDOW(WINDOW_WIDTH, WINDOW_HEIGHT) MAIN
 
 //GOAL: simulate shapes render them (with animations) with collisions reacting to input and UI with sound effects
 //
-//TODO: then Animation class, Debug class - printing
+//TODO: UI, Physics, Sound
 
 Transform tf(300, 300, 0, 2, 1);
 Shape::AABB birdHitBox(-200, 200, 200, -200);
 Animation birdAnimation(
 	Sprite(Transform::VerticesFor(birdHitBox, true), Transform::IndicesFor(birdHitBox), true, texV, texF, 
-		"C:/Users/User/Desktop/sprites/2048_blocks/block_2.png", true, 
+		"", true, 
 		glm::ortho(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT), VBO_ARGS
 	), 
-	{ "C:/Users/User/Desktop/sprites/2048_blocks/block_2.png", "C:/Users/User/Desktop/sprites/2048_blocks/block_64.png" },
+	{ "C:/Users/User/Desktop/sprites/2048_blocks/block_2.png", "C:/Users/User/Desktop/sprites/2048_blocks/block_64.png",
+	"C:/Users/User/Desktop/sprites/2048_blocks/block_32.png" },
 	true,
 	1.0f
 );
+Sound sound("C:/Users/User/Desktop/Sounds/shortWhiteNoise.wav");
 
-void Start() 
+void Start()
 {
 	birdAnimation.SetLooping(true);
+	sound.isLooping = true;
 }
 
 float stopAt = 0.0f;
 
 void Update()
 {
+	sound.Update();
+
 	stopAt += Time::dt;
-	if (stopAt >= 10) birdAnimation.Stop();
+	if (stopAt >= 3)
+	{
+		birdAnimation.Stop();
+		//sound.Stop();
+	}
 
 	tf.Move(40.0f * Time::dt, 0);
 	tf.rotation += 1 * Time::dt;
