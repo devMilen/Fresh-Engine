@@ -143,8 +143,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CoreEngine.cpp" />
+    <ClCompile Include="Print.cpp" />
     <ClCompile Include="GL.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -154,9 +156,12 @@
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CoreEngine.h" />
+    <ClInclude Include="Print.h" />
     <ClInclude Include="GL.h" />
+    <ClInclude Include="Header.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="Sprite.h" />

@@ -263,6 +263,8 @@ void main() {
 #define POSITIONS_5    0.0f, 0.0f,
 #define POSITIONS_5_90 1.0f, 1.0f,
 #define POSITIONS_6    0.0f, 1.0f
+
+#define VBO_ARGS 0, 2, 4, 0, 1, 2, 4, 2
 #pragma endregion
 	};
 };
