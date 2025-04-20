@@ -135,21 +135,21 @@ Collision::Info Collision::CheckInfo(const Shape::Def* shape, const Shape::Def* 
 bool Collision::Check(Shape::Def* shape, const Transform& transform1, Shape::Def* shape2, const Transform& transform2)
 {
     shape->Move(transform1.pos);
-    shape->Scale(transform1.scale);
     shape->Rotate(transform1.rotation);
+    shape->Scale(transform1.scale);
 
     shape2->Move(transform2.pos);
-    shape2->Scale(transform2.scale);
     shape2->Rotate(transform2.rotation);
+    shape2->Scale(transform2.scale);
 
     bool colliding =  Check(shape, shape2);
 
-    shape->Rotate(-transform1.rotation);
     shape->Scale(glm::vec2(1.0f) / transform1.scale);
+    shape->Rotate(-transform1.rotation);
     shape->Move(-transform1.pos);
 
-    shape2->Rotate(-transform2.rotation);
     shape2->Scale(glm::vec2(1.0f) / transform2.scale);
+    shape2->Rotate(-transform2.rotation);
     shape2->Move(-transform2.pos);
 
     return colliding;
@@ -157,21 +157,21 @@ bool Collision::Check(Shape::Def* shape, const Transform& transform1, Shape::Def
 Collision::Info Collision::CheckInfo(Shape::Def* shape, const Transform& transform1, Shape::Def* shape2, const Transform& transform2) 
 {
     shape->Move(transform1.pos);
-    shape->Scale(transform1.scale);
     shape->Rotate(transform1.rotation);
+    shape->Scale(transform1.scale);
 
     shape2->Move(transform2.pos);
-    shape2->Scale(transform2.scale);
     shape2->Rotate(transform2.rotation);
+    shape2->Scale(transform2.scale);
 
     Info colliding = CheckInfo(shape, shape2);
 
-    shape->Rotate(-transform1.rotation);
     shape->Scale(glm::vec2(1.0f) / transform1.scale);
+    shape->Rotate(-transform1.rotation);
     shape->Move(-transform1.pos);
 
-    shape2->Rotate(-transform2.rotation);
     shape2->Scale(glm::vec2(1.0f) / transform2.scale);
+    shape2->Rotate(-transform2.rotation);
     shape2->Move(-transform2.pos);
 
     return colliding;
@@ -212,17 +212,16 @@ bool Collision::CheckScaleCir(Shape::Def* shape, const Shape::Circle& cir, const
 
     return false;
 }
-
 bool Collision::CheckScaleCir(Shape::Def* shape, const Transform& shapeTransform, const Shape::Circle& cir, const Transform& cirTransform)
 {
     shape->Move(shapeTransform.pos);
-    shape->Scale(shapeTransform.scale);
     shape->Rotate(shapeTransform.rotation);
+    shape->Scale(shapeTransform.scale);
 
     bool colliding = CheckScaleCir(shape, cir, cirTransform);
 
-    shape->Rotate(-shapeTransform.rotation);
     shape->Scale(glm::vec2(1.0f) / shapeTransform.scale); 
+    shape->Rotate(-shapeTransform.rotation);
     shape->Move(-shapeTransform.pos);
 
     return colliding;

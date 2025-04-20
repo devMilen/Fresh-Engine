@@ -15,9 +15,9 @@ CREATEWINDOW(WINDOW_WIDTH, WINDOW_HEIGHT) MAIN
 
 //GOAL: simulate shapes render them (with animations) with collisions reacting to input and UI with sound effects
 //
-//TODO: UI, Physics, Sound
+//TODO: smooth edge shaders, UI, Physics
 
-Transform tf(300, 300, 0, 2, 1);
+Transform tf(300, 300, 0, 0.5f, 0.25f);
 Shape::AABB birdHitBox(-200, 200, 200, -200);
 Animation birdAnimation(
 	Sprite(Transform::VerticesFor(birdHitBox, true), Transform::IndicesFor(birdHitBox), true, texV, texF, 
@@ -34,14 +34,16 @@ Sound sound("C:/Users/User/Desktop/Sounds/shortWhiteNoise.wav");
 void Start()
 {
 	birdAnimation.SetLooping(true);
-	sound.isLooping = true;
+	//sound.isLooping = true;
+	sound.Stop();
+
 }
 
 float stopAt = 0.0f;
 
 void Update()
 {
-	sound.Update();
+	//sound.Update();
 
 	stopAt += Time::dt;
 	if (stopAt >= 3)
@@ -50,8 +52,8 @@ void Update()
 		//sound.Stop();
 	}
 
-	tf.Move(40.0f * Time::dt, 0);
-	tf.rotation += 1 * Time::dt;
+	tf.Move(0.0f * Time::dt, 0);
+	tf.rotation += 4 * Time::dt;
 
 	birdAnimation.Update(Time::dt);
 	tf.SetMat(birdAnimation.sprite.mat);

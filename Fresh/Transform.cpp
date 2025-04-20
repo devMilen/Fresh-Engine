@@ -319,6 +319,6 @@ void Transform::SetMat(glm::mat4& mat)
 {
     mat = glm::ortho(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT);
     mat = glm::translate(mat, glm::vec3(pos.x, pos.y, 0.0f));
-    mat = glm::scale(mat, glm::vec3(scale.x, scale.y, 1.0f));
     mat = glm::rotate(mat, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+    mat = glm::scale(mat, glm::vec3(scale.x, scale.y, 1.0f));
 }
