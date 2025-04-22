@@ -127,3 +127,32 @@ void Sprite::RenderCir(float r, float g, float b, float a, float radius, float O
     Select();
     glDrawElements(GL_TRIANGLES, indicesSize, GL_UNSIGNED_INT, nullptr);
 }
+
+void Sprite::RenderBatch(const std::vector<float>& aVBO, const std::vector<unsigned int>& aIBO)
+{
+    glBindVertexArray(ABO.id);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO.id);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, aVBO.size() * sizeof(float), aVBO.data());
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO.id);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, aIBO.size() * sizeof(float), aIBO.data());
+
+    glUseProgram(shader.id);
+    glBindTexture(GL_TEXTURE_2D, texture.id);
+    glDrawElements(GL_TRIANGLES, aIBO.size(), GL_UNSIGNED_INT, 0);
+}
+void Sprite::RenderBatchNew(const std::vector<float>& aVBO, std::vector<unsigned int>& aIBO)
+{
+    glBindVertexArray(ABO.id);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO.id);
+    glBufferData(GL_ARRAY_BUFFER, aVBO.size() * sizeof(float), aVBO.data(), GL_DYNAMIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO.id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, aIBO.size() * sizeof(unsigned int), aIBO.data(), GL_DYNAMIC_DRAW);
+
+    glUseProgram(shader.id);
+    glBindTexture(GL_TEXTURE_2D, texture.id);
+    glDrawElements(GL_TRIANGLES, aIBO.size(), GL_UNSIGNED_INT, 0);
+}

@@ -109,6 +109,19 @@ const unsigned int Shape::Line::pointsSize() const
 }
 #pragma endregion
 
+std::vector<Shape::Line> Shape::ToLinesList(const Shape::Def* shape)
+{
+    const int count = shape->pointsSize();
+
+    std::vector<Shape::Line> res = { };
+    res.reserve(count);
+
+    for (int i = 0; i < count - 1; i++)
+        res.emplace_back(shape->points[i], shape->points[i + 1]);
+    res.emplace_back(shape->points[count - 1], shape->points[0]);
+    return res;
+}
+
 #pragma region Triangle
 Shape::Triangle::Triangle() {
     localPoints[0] = glm::vec2(0);

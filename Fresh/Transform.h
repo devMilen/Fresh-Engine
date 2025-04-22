@@ -3,8 +3,8 @@
 #include <array>
 
 #pragma region defines
-#define WINDOW_HEIGHT 800
-#define WINDOW_WIDTH 800
+#define WINDOW_WIDTH 1920
+#define WINDOW_HEIGHT 1080
 #define RELEASE 0
 #define PRESS 1
 #define HOLD 2

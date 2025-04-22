@@ -227,5 +227,44 @@ bool Collision::CheckScaleCir(Shape::Def* shape, const Transform& shapeTransform
     return colliding;
 }
 
+bool Collision::RayIntersectsSegment(
+    const glm::vec2& rayOrigin, const glm::vec2& rayDir,
+    const glm::vec2& segA, const glm::vec2& segB, glm::vec2* outIntersection
+) {
+    glm::vec2 r = rayDir;
+    glm::vec2 s = segB - segA;
+    glm::vec2 diff = segA - rayOrigin;
 
+    float rxs = r.x * s.y - r.y * s.x,
+        diffxr = diff.x * r.y - diff.y * r.x;
 
+    if (std::abs(rxs) < 1e-6f) 
+        return false;
+
+    float t = (diff.x * s.y - diff.y * s.x) / rxs,
+          u = diffxr / rxs;
+
+    if (t >= 0 && u >= 0 && u <= 1) {
+        if (outIntersection)
+            *outIntersection = rayOrigin + t * r;
+        return true;
+    }
+
+    return false;
+}
+bool Collision::PinPoly(const glm::vec2& p, Shape::Def* shape)
+{
+    glm::vec2 relativePos = p - shape->Center();
+    std::vector<Shape::Line> lines = Shape::ToLinesList(shape);
+
+    int count = 0;
+    for (const auto& line : lines)
+        if (Collision::RayIntersectsSegment(relativePos, glm::vec2(0, 1), line.points[0], line.points[1]))
+            count++;
+
+    return count % 2 != 0;
+}
+bool Collision::PinPoly(float pX, float pY, Shape::Def* shape)
+{
+    return Collision::PinPoly(glm::vec2(pX, pY), shape);
+}

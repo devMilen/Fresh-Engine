@@ -45,4 +45,11 @@ public:
 
 	static bool CheckScaleCir(Shape::Def* shape, const Shape::Circle& cir, const Transform& cirTransform);
 	static bool CheckScaleCir(Shape::Def* shape, const Transform& shapeTransform, const Shape::Circle& cir, const Transform& cirTransform);
+
+	static bool RayIntersectsSegment(
+		const glm::vec2& rayOrigin, const glm::vec2& rayDir,
+		const glm::vec2& segA, const glm::vec2& segB, glm::vec2* outIntersection = nullptr
+	);
+	static bool PinPoly(const glm::vec2& p, Shape::Def* shape);
+	static bool PinPoly(float pX, float pY, Shape::Def* shape);
 };

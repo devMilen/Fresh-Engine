@@ -8,6 +8,7 @@
 #define MAIN \
 int main() {\
     glfwGetWindowSize(window, &windowWidth, &windowHeight);\
+    glfwMaximizeWindow(window);\
 	Start();\
     while (!glfwWindowShouldClose(window))\
     {\

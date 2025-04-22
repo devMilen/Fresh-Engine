@@ -155,6 +155,7 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -162,13 +163,13 @@
     <ClInclude Include="CoreEngine.h" />
     <ClInclude Include="Print.h" />
     <ClInclude Include="GL.h" />
-    <ClInclude Include="Header.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

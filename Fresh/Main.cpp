@@ -1,62 +1,37 @@
+#include "Transform.h"
 #include "stb_image.h"
 #include "CoreEngine.h"
 #include "Sprite.h"
 #include "Time.h"
 #include "Input.h"
 #include "Shape.h"
-#include "Transform.h"
 #include <iostream>
 #include "Collision.h"
 #include "Animation.h"
 #include "Print.h"
 #include "Sound.h"
-
+#include "UI.h"
 CREATEWINDOW(WINDOW_WIDTH, WINDOW_HEIGHT) MAIN
 
 //GOAL: simulate shapes render them (with animations) with collisions reacting to input and UI with sound effects
 //
-//TODO: smooth edge shaders, UI, Physics
-
-Transform tf(300, 300, 0, 0.5f, 0.25f);
-Shape::AABB birdHitBox(-200, 200, 200, -200);
-Animation birdAnimation(
-	Sprite(Transform::VerticesFor(birdHitBox, true), Transform::IndicesFor(birdHitBox), true, texV, texF, 
-		"", true, 
-		glm::ortho(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT), VBO_ARGS
-	), 
-	{ "C:/Users/User/Desktop/sprites/2048_blocks/block_2.png", "C:/Users/User/Desktop/sprites/2048_blocks/block_64.png",
-	"C:/Users/User/Desktop/sprites/2048_blocks/block_32.png" },
-	true,
-	1.0f
-);
-Sound sound("C:/Users/User/Desktop/Sounds/shortWhiteNoise.wav");
+//TODO:  batch rendering, UI, smooth edge shaders, Physics, Print
+Transform tf(900, 500, 0, 4*1080.0f/1920.0f, 2*1);
+UI::TextBox tb(0, 0, "lol", 50, 50);
 
 void Start()
 {
-	birdAnimation.SetLooping(true);
-	//sound.isLooping = true;
-	sound.Stop();
-
+	//tb.AddLetter('c');
+	//tb.ChangeLetter(0, 'a');
+	tb.RenderNew();
 }
-
-float stopAt = 0.0f;
 
 void Update()
 {
-	//sound.Update();
+	tf.Move(10.0f * Time::dt, 0);
+	tf.rotation += 20.0f * Time::dt;
+	tf.SetMat(tb.textBatch.mat);
 
-	stopAt += Time::dt;
-	if (stopAt >= 3)
-	{
-		birdAnimation.Stop();
-		//sound.Stop();
-	}
-
-	tf.Move(0.0f * Time::dt, 0);
-	tf.rotation += 4 * Time::dt;
-
-	birdAnimation.Update(Time::dt);
-	tf.SetMat(birdAnimation.sprite.mat);
-	birdAnimation.sprite.Render();
+	tb.Render();
 }
 

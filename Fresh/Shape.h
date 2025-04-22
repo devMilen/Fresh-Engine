@@ -60,6 +60,8 @@ public:
 		glm::vec2 localPoints[2];
 	};
 
+	static std::vector<Line> ToLinesList(const Shape::Def* shape);
+
 	class Triangle : public Def
 	{
 	public:
