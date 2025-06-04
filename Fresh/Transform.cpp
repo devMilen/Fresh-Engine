@@ -238,10 +238,10 @@ std::vector<float> Transform::VerticesFor(const Shape::Polygon& poly)
 std::array<float, 8> Transform::VerticesFor(const Shape::Circle& cir)
 {
     return std::array<float, 8> {
-       0, 0,
-       0, WINDOW_HEIGHT,
-       WINDOW_WIDTH, WINDOW_HEIGHT,
-       WINDOW_WIDTH, 0
+        cir.points[0].x - cir.r, cir.points[0].y + cir.r,
+        cir.points[0].x - cir.r, cir.points[0].y - cir.r,
+        cir.points[0].x + cir.r, cir.points[0].y - cir.r,
+        cir.points[0].x + cir.r, cir.points[0].y + cir.r
     };
 }
 

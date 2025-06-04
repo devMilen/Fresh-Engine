@@ -4,7 +4,7 @@
 
 #pragma region defines
 #define WINDOW_WIDTH 1920
-#define WINDOW_HEIGHT 1080
+#define WINDOW_HEIGHT 1050
 #define RELEASE 0
 #define PRESS 1
 #define HOLD 2
@@ -21,7 +21,7 @@
 #define Deg 57.2957795
 #pragma endregion
 
-class Transform 
+class Transform
 {
 public:
 	glm::vec2 pos, scale;

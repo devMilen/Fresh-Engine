@@ -5,7 +5,8 @@
 
      //const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
      //GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "Full-Screen Window", glfwGetPrimaryMonitor(), NULL);
-    
+     glfwWindowHint(GLFW_DEPTH_BITS, 24);
+
      GLFWwindow* window = glfwCreateWindow(windowWidthPx, windowHeightPx, windowName, NULL, NULL);
      assert(window);
 

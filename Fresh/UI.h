@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "Sprite.h"
+#include "Input.h"
 #include "Collision.h"
 #include "Shape.h"
 #include "stb_image.h"
@@ -8,43 +9,20 @@
 class UI
 {
 public:
-	enum Action
-	{
-		NotPressed = 0, JustPressed = 1, Held = 2, JustReleased = 3
-	};
-	class Mouse
-	{
-	public:
-		static glm::vec2 pos;
-		static Action action;
-	
-		void static Move(float x, float y);
-		void static Move(const glm::vec2& v);
-			 
-		void static Set(float x, float y, Action action);
-		void static Set(const glm::vec2& pos, Action action);
-			 
-		void static Update(float x, float y, Action action);
-		void static Update(const glm::vec2& v, Action action);
-	};
-
 	class Button
 	{
 	public:
 		Shape::Def* hitBox;
+		Transform* tf;
 		void (*OnClick)(void* data);
 		bool onDown = true;
+		unsigned int mouseButtonIndex;
 
 		Button();
-		Button(const Shape::Def* hitBox, void (*OnClick)(void* data), bool onDown);
+		Button(Shape::Def* hitBox, Transform* tf, unsigned int mouseButtonIndex, void (*OnClick)(void* data), bool onDown);
 
-		void Update(const glm::vec2& cursorPos, Action action);
-		void Update(float cursorPosX, float cursorPosY, Action action);
-		void Update(const Mouse& state);
-
-		void Update(const glm::vec2& cursorPos, Action action, void* data);
-		void Update(float cursorPosX, float cursorPosY, Action action, void* data);
-		void Update(const Mouse& state, void* data);
+		void Update();
+		void Update(void* data);
 	};
 
 	class Draggable
@@ -75,8 +53,8 @@ public:
 		std::string text;
 
 		TextBox();
-		TextBox(const glm::vec2& pos, const std::string& initText, float letterHeight, float letterWidth);
-		TextBox(float posX, float posY, const std::string& initText, float letterHeight, float letterWidth);
+		TextBox(const glm::vec2& pos, const std::string& initText, float letterHeight, float letterWidth, float depth);
+		TextBox(float posX, float posY, const std::string& initText, float letterHeight, float letterWidth, float depth);
 
 		void AddLetterArgs(unsigned int indexInText);
 		void AddLetter(char newLetter);

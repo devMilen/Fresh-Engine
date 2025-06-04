@@ -85,8 +85,10 @@ public:
 #version 330 core
 layout(location = 0) in vec2 pos;
 
+uniform float depth;
+
 void main() {
-	gl_Position = vec4(pos, 0.0f, 1.0f);
+	gl_Position = vec4(pos, depth, 1.0f);
 })"
 
 #define defF R"(
@@ -101,11 +103,12 @@ void main() {
 #define matOffV R"(
 	#version 330 core
 	layout (location = 0) in vec2 pos;
+	uniform float depth;
 	uniform vec2 offset = vec2(0.0);
 	uniform mat4 mat;
 
 	void main() {
-		gl_Position = mat * vec4(pos + offset, 0.0f, 1.0f);
+		gl_Position = mat * vec4(pos + offset, depth, 1.0f);
 	}
 )"
 
@@ -156,31 +159,36 @@ void main() {
 			finalColor = givenColor;
 	}
 )"
-
 #define colScaleRotCirF R"(
-	#version 330 core
-	out vec4 finalColor;
+    #version 330 core
+    out vec4 finalColor;
 
-	uniform vec4 givenColor;
-	uniform vec4 O_r_donutness;
-	uniform vec4 scale_sin_cos;
+    uniform vec4 givenColor;
+    uniform vec4 O_r_donutness;
+    uniform vec4 scale_sin_cos;
 
-	void main() {
-		finalColor = vec4(0.0);
+    void main() {
+        vec2 PxPosRel00 = gl_FragCoord.xy - O_r_donutness.xy;
+        PxPosRel00 = vec2(
+            PxPosRel00.x * scale_sin_cos.w - PxPosRel00.y * scale_sin_cos.z, 
+            PxPosRel00.x * scale_sin_cos.z + PxPosRel00.y * scale_sin_cos.w
+        );
 
-		vec2 PxPosRel00 = (gl_FragCoord.xy - O_r_donutness.xy);
-		PxPosRel00 = vec2(
-			PxPosRel00.x * scale_sin_cos.w - PxPosRel00.y * scale_sin_cos.z, 
-			PxPosRel00.x * scale_sin_cos.z + PxPosRel00.y * scale_sin_cos.w
-		);
-		PxPosRel00 /= scale_sin_cos.xy;
+        vec2 safeScale = max(scale_sin_cos.xy, vec2(1e-6));
+        PxPosRel00 /= safeScale;
 
-		float sqSum = PxPosRel00.x*PxPosRel00.x + PxPosRel00.y*PxPosRel00.y;
+        float sqSum = dot(PxPosRel00, PxPosRel00);
 
-		if(sqSum <= O_r_donutness.z*O_r_donutness.z && sqSum >= O_r_donutness.w*O_r_donutness.w) 
-			finalColor = givenColor;
-	}
+        float outerR2 = O_r_donutness.z * O_r_donutness.z;
+        float innerR2 = O_r_donutness.w * O_r_donutness.w;
+
+        if (sqSum <= outerR2 && sqSum >= innerR2) 
+            finalColor = givenColor;
+        else 
+			discard;
+    }
 )"
+
 
 #define OptimizedcolScaleRotCirF R"(
 	#version 330 core
@@ -218,6 +226,7 @@ void main() {
 
 	out vec2 texCoord;	
 	uniform vec2 offset = vec2(0.0);
+	uniform float depth;
 	uniform mat4 mat = mat4(
 		1.0, 0.0, 0.0, 0.0,  
 		0.0, 1.0, 0.0, 0.0,  
@@ -226,7 +235,7 @@ void main() {
 	);
 
 	void main() {
-		gl_Position = mat * vec4(pos + offset, 0.0, 1.0);	
+		gl_Position = mat * vec4(pos + offset, depth, 1.0);	
 		texCoord = givenTexCoord;
 	}
 )"

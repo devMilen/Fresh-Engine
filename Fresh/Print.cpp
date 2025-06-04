@@ -49,32 +49,50 @@ void Print::Info(const Sprite& sprite, const char* name)
 	std::cout << "-------------------END OF: " << name << "-----------------------" << std::endl;
 
 }
+void Print::Info(const char* message, const glm::vec2& mousePos, const std::bitset<26>& isLetterPressed,
+	const std::unordered_map<int, bool>& specialKeyForIsPressed,
+	const std::bitset<10>& isNumberPressed)
+{
+	std::cout << "-------------------Input: " << message << "-----------------------" << std::endl;
+	std::cout << "mousePos: (" << mousePos.x << ", " << mousePos.y << ')' << std::endl;
 
-void PrintVec(const glm::vec2& v, const char* name)
-{
-	std::cout << name << ": (" << v.x << ", " << v.y << ")" << std::endl;
+	std::cout << "isLetterPressed: {" << std::endl;
+	for (char i = 'a'; i <= 'z'; i++)
+		if(isLetterPressed[i - 'a'])
+		std::cout << (char)i;
+	std::cout << "};\n";
+
+	std::cout << "isSpecialKeyPressed: {" << std::endl;
+	for (std::pair<int, bool> pair : specialKeyForIsPressed)
+		if(pair.second)
+			std::cout << specialKeyForIsPressed.at(pair.first) << pair.first << ", " << pair.second << std::endl;
+	std::cout << "};\n";
+
+	std::cout << "isNumberPressed: {" << std::endl;
+	for (char i = '0'; i <= '9'; i++)
+		if (isNumberPressed[i - '0'])
+			std::cout << (char)i << ", ";
+	std::cout << "};\n";
+	std::cout << "-------------------END OF: " << message << "-----------------------" << std::endl;
 }
-void PrintVec(const glm::vec3& v, const char* name)
+
+void Print::Info(const char* name, const glm::vec2& mousePos, const std::array<Input::Action, 5>& buttons,
+	const std::bitset<26>& isLetterPressed)
 {
-	std::cout << name << ": (" << v.x << ", " << v.y << ", " << v.z << ")" << std::endl;
-}
-void PrintVec(const glm::vec4& v, const char* name)
-{
-	std::cout << name << ": (" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << ")" << std::endl;
-}
-void PrintMat(const glm::mat4& mat, const char* name)
-{
-	std::cout << "-------------------mat4: " << name << "-----------------------" << std::endl;
-	for (int i = 0; i < 4; ++i)
-	{
-		std::cout << "   (";
-		for (int j = 0; j < 4; ++j)
-		{
-			std::cout << mat[i][j];
-			if (j < 3) std::cout << ", ";
-		}
-		std::cout << "),\n";
-	}
+	std::cout << "-------------------Input: " << name << "-----------------------" << std::endl;
+	std::cout << "mouse pos: (" << mousePos.x << ", " << mousePos.y << ')' << std::endl;
+
+	std::cout << "isLetterPressed: {" << std::endl;
+	for (char i = 'a'; i <= 'z'; i++)
+		if (isLetterPressed[i - 'a'])
+			std::cout << (char)i;
+	std::cout << "};\n";
+
+	std::cout << "buttons: {" << std::endl;
+	for (int i = 0; i < buttons.size(); i++)
+		std::cout << buttons[i] << ", ";
+	std::cout << "};\n";
 	std::cout << "-------------------END OF: " << name << "-----------------------" << std::endl;
+
 }
 
