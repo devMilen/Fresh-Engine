@@ -24,11 +24,11 @@ class ColInfo
 {
 	public:
 		bool isColliding;
-		float depth;
+		float m_dist_z;
 		glm::vec2 CollNormal;
 
 		ColInfo();
-		ColInfo(bool isColliding, float depth, const glm::vec2& CollNormal);
+		ColInfo(bool isColliding, float m_dist_z, const glm::vec2& CollNormal);
 };
 
 inline glm::vec2 ProjectedP(const glm::vec2& P, const glm::vec2& A, const glm::vec2& d)

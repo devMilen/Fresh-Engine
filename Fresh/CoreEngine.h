@@ -5,6 +5,7 @@
 #include "Sprite.h"
 #include "Input.h"
 #include "Time.h"
+#include "Animation.h"
 
 #define CREATEWINDOW GLFWwindow* window = CreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "name"); 
 #define MAIN \

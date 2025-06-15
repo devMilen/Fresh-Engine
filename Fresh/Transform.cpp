@@ -315,10 +315,10 @@ std::array<unsigned int, 6> Transform::IndicesFor(const Shape::Circle& cir)
     };
 }
 
-void Transform::SetMat(glm::mat4& mat)
+void Transform::SetMat(glm::mat4& m_mat)
 {
-    mat = glm::ortho(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT);
-    mat = glm::translate(mat, glm::vec3(pos.x, pos.y, 0.0f));
-    mat = glm::rotate(mat, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-    mat = glm::scale(mat, glm::vec3(scale.x, scale.y, 1.0f));
+    m_mat = glm::ortho(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT);
+    m_mat = glm::translate(m_mat, glm::vec3(pos.x, pos.y, 0.0f));
+    m_mat = glm::rotate(m_mat, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+    m_mat = glm::scale(m_mat, glm::vec3(scale.x, scale.y, 1.0f));
 }

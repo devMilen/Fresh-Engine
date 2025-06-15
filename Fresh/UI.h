@@ -53,8 +53,8 @@ public:
 		std::string text;
 
 		TextBox();
-		TextBox(const glm::vec2& pos, const std::string& initText, float letterHeight, float letterWidth, float depth);
-		TextBox(float posX, float posY, const std::string& initText, float letterHeight, float letterWidth, float depth);
+		TextBox(const glm::vec2& pos, const std::string& initText, float letterHeight, float letterWidth, float m_dist_z);
+		TextBox(float posX, float posY, const std::string& initText, float letterHeight, float letterWidth, float m_dist_z);
 
 		void AddLetterArgs(unsigned int indexInText);
 		void AddLetter(char newLetter);

@@ -1,6 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "GL.h"
+#include <iostream>
 
 #pragma region ArrayBuffer
 GL::ArrayBuffer::ArrayBuffer() 
@@ -8,7 +9,7 @@ GL::ArrayBuffer::ArrayBuffer()
 	glCreateVertexArrays(1, &id);
 	glBindVertexArray(id);
 }
-void GL::ArrayBuffer::Select()
+void GL::ArrayBuffer::Select() const
 {
 	glBindVertexArray(id);
 }
@@ -25,11 +26,11 @@ GL::VertexBuffer::VertexBuffer(const std::vector<float>& vertices, bool isStatic
 	AssignPointer(location, flPerVertex, stride, beginOffset);
 }
 
-void GL::VertexBuffer::Select() 
+void GL::VertexBuffer::Select() const
 {
 	glBindBuffer(GL_ARRAY_BUFFER, id);
 }
-void GL::VertexBuffer::AssignPointer(unsigned int location, unsigned int flPerVertex, unsigned int stride, void* beginOffset) 
+void GL::VertexBuffer::AssignPointer(unsigned int location, unsigned int flPerVertex, unsigned int stride, void* beginOffset) const
 {
 	glVertexAttribPointer(location, flPerVertex, GL_FLOAT, false, stride, beginOffset);
 	glEnableVertexAttribArray(location);
@@ -61,6 +62,9 @@ GL::ShaderProgram::ShaderProgram(const char* vertexShader, const char* fragmentS
 	glDeleteShader(vertexShaderID);
 	glDeleteShader(fragmentShaderID);
 }
+GL::ShaderProgram::ShaderProgram(const std::string_view& vertexShader, const std::string_view& fragmentShader)
+	: ShaderProgram(vertexShader.data(), fragmentShader.data()) {
+}
 
 bool GL::ShaderProgram::HaveShadersCompiled(unsigned int shaderidToCheck)
 {
@@ -76,11 +80,11 @@ bool GL::ShaderProgram::HaveShadersCompiled(unsigned int shaderidToCheck)
 	//}
 }
 
-unsigned int GL::ShaderProgram::ULocOf(const char* Uname)
+unsigned int GL::ShaderProgram::ULocOf(const char* Uname) const
 {
 	return glGetUniformLocation(id, Uname);
 }
-void GL::ShaderProgram::Select() 
+void GL::ShaderProgram::Select() const 
 {
 	glUseProgram(id);
 }
@@ -95,7 +99,7 @@ GL::IndexBuffer::IndexBuffer(const std::vector<unsigned int>& indices, bool isSt
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(float), indices.data(), (isStatic) ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
 }
 
-void GL::IndexBuffer::Select()
+void GL::IndexBuffer::Select() const
 {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
 }
@@ -105,6 +109,9 @@ void GL::IndexBuffer::Select()
 GL::Texture::Texture() {}
 GL::Texture::Texture(const char* filePath, bool flip180)
 {
+	if (filePath == nullptr)
+		filePath = "";
+
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);
 
@@ -127,8 +134,8 @@ void GL::Texture::GiveTextureParams(bool shouldBlurPixels) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (shouldBlurPixels) ? GL_NEAREST : GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (shouldBlurPixels) ? GL_NEAREST : GL_LINEAR);
 }
-void GL::Texture::Select()
+void GL::Texture::Select() const
 {
 	glBindTexture(GL_TEXTURE_2D, id);
-}
+} 
 #pragma endregion

@@ -10,6 +10,8 @@
 #include <vector>
 #include <array>
 
+#include <string_view>
+
 class GL
 {
 public:
@@ -19,7 +21,7 @@ public:
 		unsigned int id;
 
 		ArrayBuffer();
-		void Select();
+		void Select() const;
 	};
 
 	class VertexBuffer
@@ -39,8 +41,8 @@ public:
 			AssignPointer(location, flPerVertex, stride, beginOffset);
 		}
 
-		void Select();
-		void AssignPointer(unsigned int location, unsigned int flPerVertex, unsigned int stride, void* beginOffset);
+		void Select() const;
+		void AssignPointer(unsigned int location, unsigned int flPerVertex, unsigned int stride, void* beginOffset) const;
 		template<size_t size> void UpdateData(const std::array<float, size>& newVertices, unsigned int startOffset,
 			unsigned int location = 0, unsigned int flPerVertex = 2, unsigned int stride = 2 * sizeof(float), void* beginOffset = (void*)0) 
 		{
@@ -64,7 +66,7 @@ public:
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * sizeof(float), indices.data(), (isStatic) ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
 		}
 
-		void Select();
+		void Select() const;
 	};
 
 	class ShaderProgram
@@ -74,183 +76,12 @@ public:
 
 		ShaderProgram();
 		ShaderProgram(const char* vertexShader, const char* fragmentShader);
+		ShaderProgram(const std::string_view& vertexShader, const std::string_view& fragmentShader);
 
 		bool HaveShadersCompiled(unsigned int shaderToCheck);
 
-		unsigned int ULocOf(const char* Uname);
-		void Select();
-
-#pragma region shaders
-#define defV R"(
-#version 330 core
-layout(location = 0) in vec2 pos;
-
-uniform float depth;
-
-void main() {
-	gl_Position = vec4(pos, depth, 1.0f);
-})"
-
-#define defF R"(
-   #version 330 core
-	out vec4 pixelColor;
-
-	void main(){
-		pixelColor = vec4(1.0, 1.0, 1.0, 1.0);
-	}
-)"
-
-#define matOffV R"(
-	#version 330 core
-	layout (location = 0) in vec2 pos;
-	uniform float depth;
-	uniform vec2 offset = vec2(0.0);
-	uniform mat4 mat;
-
-	void main() {
-		gl_Position = mat * vec4(pos + offset, depth, 1.0f);
-	}
-)"
-
-#define colF R"(
-   #version 330 core
-	out vec4 pixelColor;
-
-	uniform vec4 givenColor;
-
-	void main(){
-		pixelColor = givenColor;
-	}
-)"
-
-#define colCirF R"(
-	#version 330 core
-	out vec4 finalColor;
-
-	uniform vec4 givenColor;
-	uniform vec4 O_r_donutness;
-
-	void main() {
-		finalColor = vec4(0.0);
-
-		vec2 PxPosRel00 = gl_FragCoord.xy - O_r_donutness.xy;
-		float squaredAdded = PxPosRel00.x*PxPosRel00.x + PxPosRel00.y*PxPosRel00.y;
-
-		if(squaredAdded <= O_r_donutness.z*O_r_donutness.z && squaredAdded >= O_r_donutness.w*O_r_donutness.w) 
-			finalColor = givenColor;
-	}
-)"
-
-#define colScaleCirF R"(
-	#version 330 core
-	out vec4 finalColor;
-
-	uniform vec4 givenColor;
-	uniform vec4 O_r_donutness;
-	uniform vec2 scale;
-
-	void main() {
-		finalColor = vec4(0.0);
-
-		vec2 PxPosRel00 = (gl_FragCoord.xy - O_r_donutness.xy) / scale.xy;
-		float squaredAdded = PxPosRel00.x*PxPosRel00.x + PxPosRel00.y*PxPosRel00.y;
-
-		if(squaredAdded <= O_r_donutness.z*O_r_donutness.z && squaredAdded >= O_r_donutness.w*O_r_donutness.w) 
-			finalColor = givenColor;
-	}
-)"
-#define colScaleRotCirF R"(
-    #version 330 core
-    out vec4 finalColor;
-
-    uniform vec4 givenColor;
-    uniform vec4 O_r_donutness;
-    uniform vec4 scale_sin_cos;
-
-    void main() {
-        vec2 PxPosRel00 = gl_FragCoord.xy - O_r_donutness.xy;
-        PxPosRel00 = vec2(
-            PxPosRel00.x * scale_sin_cos.w - PxPosRel00.y * scale_sin_cos.z, 
-            PxPosRel00.x * scale_sin_cos.z + PxPosRel00.y * scale_sin_cos.w
-        );
-
-        vec2 safeScale = max(scale_sin_cos.xy, vec2(1e-6));
-        PxPosRel00 /= safeScale;
-
-        float sqSum = dot(PxPosRel00, PxPosRel00);
-
-        float outerR2 = O_r_donutness.z * O_r_donutness.z;
-        float innerR2 = O_r_donutness.w * O_r_donutness.w;
-
-        if (sqSum <= outerR2 && sqSum >= innerR2) 
-            finalColor = givenColor;
-        else 
-			discard;
-    }
-)"
-
-
-#define OptimizedcolScaleRotCirF R"(
-	#version 330 core
-	out vec4 finalColor;
-	
-	uniform vec4 givenColor;
-	uniform vec4 O_r_donutness;
-	uniform vec4 scale_sin_cos;
-	
-	void main() {
-	    finalColor = vec4(0.0);
-	
-	    vec2 PxPosRel00 = gl_FragCoord.xy - O_r_donutness.xy;
-	    float xRot = PxPosRel00.x * scale_sin_cos.w - PxPosRel00.y * scale_sin_cos.z;
-	    float yRot = PxPosRel00.x * scale_sin_cos.z + PxPosRel00.y * scale_sin_cos.w;
-	
-	    PxPosRel00 = vec2(xRot, yRot) / scale_sin_cos.xy;
-	
-	    float sqSum = dot(PxPosRel00, PxPosRel00);
-	
-	    float outerRadiusSquared = O_r_donutness.z * O_r_donutness.z;
-	    float innerRadiusSquared = O_r_donutness.w * O_r_donutness.w;
-	
-	    if(sqSum <= outerRadiusSquared && sqSum >= innerRadiusSquared) {
-	        finalColor = givenColor;
-	    }
-	}
-)"
-
-#define texV R"(
-	#version 330 core
-
-	layout (location = 0) in vec2 pos;
-	layout (location = 1) in vec2 givenTexCoord;		
-
-	out vec2 texCoord;	
-	uniform vec2 offset = vec2(0.0);
-	uniform float depth;
-	uniform mat4 mat = mat4(
-		1.0, 0.0, 0.0, 0.0,  
-		0.0, 1.0, 0.0, 0.0,  
-		0.0, 0.0, 1.0, 0.0,  
-		0.0, 0.0, 0.0, 1.0  
-	);
-
-	void main() {
-		gl_Position = mat * vec4(pos + offset, depth, 1.0);	
-		texCoord = givenTexCoord;
-	}
-)"
-
-#define texF R"(
-	#version 330 core
-	out vec4 finalColor;
-	in vec2 texCoord;	
-	uniform sampler2D ourTexture;
-
-	void main() {
-		finalColor = texture(ourTexture, texCoord);
-	}
-)"
-#pragma endregion
+		unsigned int ULocOf(const char* Uname) const;
+		void Select() const;
 	};
 
 	class Texture
@@ -262,7 +93,7 @@ void main() {
 		Texture(const char* filePath, bool flip180);
 
 		void GiveTextureParams(bool shouldBlurPixels);
-		void Select();
+		void Select() const;
 #pragma region defReadPositions
 #define POSITIONS_1    0.0f, 1.0f,
 #define POSITIONS_2    1.0f, 1.0f,

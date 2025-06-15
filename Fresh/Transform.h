@@ -73,7 +73,7 @@ public:
 	static std::array<unsigned int, 12> IndicesFor(const Shape::Hexagon& hexagon);
 	static std::array<unsigned int, 6> IndicesFor(const Shape::Circle& cir);
 
-	void SetMat(glm::mat4& mat);
+	void SetMat(glm::mat4& m_mat);
 };
 
 

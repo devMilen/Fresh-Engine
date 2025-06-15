@@ -8,6 +8,6 @@ float F::Calc(float x)
 	return aUp * x / aDown + b;
 }
 
-ColInfo::ColInfo() : isColliding(false), depth(0.0f), CollNormal(0.0f, 0.0f) {}
-ColInfo::ColInfo(bool isColliding, float depth, const glm::vec2& CollNormal)
-	: isColliding(isColliding), depth(depth), CollNormal(CollNormal) {};
+ColInfo::ColInfo() : isColliding(false), m_dist_z(0.0f), CollNormal(0.0f, 0.0f) {}
+ColInfo::ColInfo(bool isColliding, float m_dist_z, const glm::vec2& CollNormal)
+	: isColliding(isColliding), m_dist_z(m_dist_z), CollNormal(CollNormal) {};
