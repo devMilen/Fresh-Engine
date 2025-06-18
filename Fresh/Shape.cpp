@@ -365,22 +365,22 @@ const unsigned int Shape::Polygon::pointsSize() const {
 #pragma endregion
 
 #pragma region Circle
-Shape::Circle::Circle() : r(0.0f) 
+Shape::Circle::Circle() : m_r(0.0f) 
 { 
     localPoints[0] = glm::vec2(0);
     points = localPoints;
 }
-Shape::Circle::Circle(float r) : r(r)
+Shape::Circle::Circle(float m_r) : m_r(m_r)
 {
     localPoints[0] = glm::vec2(0);
     points = localPoints;
 }
-Shape::Circle::Circle(float Ox, float Oy, float r) : r(r) 
+Shape::Circle::Circle(float Ox, float Oy, float m_r) : m_r(m_r) 
 {
     localPoints[0] = glm::vec2(Ox, Oy);
     points = localPoints;
 }
-Shape::Circle::Circle(const glm::vec2& O, float r) : r(r) 
+Shape::Circle::Circle(const glm::vec2& O, float m_r) : m_r(m_r) 
 {
     localPoints[0] = O;
     points = localPoints;

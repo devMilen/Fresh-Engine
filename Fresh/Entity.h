@@ -132,8 +132,8 @@ public:
 		m_def_spr.Render();
 	}
 
-	inline constexpr void RenderDefSpr(float r, float g, float b, float a) {
-		m_def_spr.Render(r, g, b, a);
+	inline constexpr void RenderDefSpr(float m_r, float m_g, float m_b, float m_a) {
+		m_def_spr.Render(m_r, m_g, m_b, m_a);
 	}
 
 	inline constexpr void SetCurAnim(unsigned int index) {

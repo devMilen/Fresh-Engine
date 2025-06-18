@@ -17,19 +17,12 @@ void GL::ArrayBuffer::Select() const
 
 #pragma region VertexBuffer
 GL::VertexBuffer::VertexBuffer() {}
-GL::VertexBuffer::VertexBuffer(const std::vector<float>& vertices, bool isStatic,
-	unsigned int location, unsigned int flPerVertex, unsigned int stride, void* beginOffset)
-{
-    glGenBuffers(1, &id);
-    glBindBuffer(GL_ARRAY_BUFFER, id);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), (isStatic) ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
-	AssignPointer(location, flPerVertex, stride, beginOffset);
-}
 
 void GL::VertexBuffer::Select() const
 {
 	glBindBuffer(GL_ARRAY_BUFFER, id);
 }
+
 void GL::VertexBuffer::AssignPointer(unsigned int location, unsigned int flPerVertex, unsigned int stride, void* beginOffset) const
 {
 	glVertexAttribPointer(location, flPerVertex, GL_FLOAT, false, stride, beginOffset);
@@ -92,12 +85,6 @@ void GL::ShaderProgram::Select() const
 
 #pragma region IndexBuffer
 GL::IndexBuffer::IndexBuffer() {}
-GL::IndexBuffer::IndexBuffer(const std::vector<unsigned int>& indices, bool isStatic)
-{
-	glGenBuffers(1, &id);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(float), indices.data(), (isStatic) ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
-}
 
 void GL::IndexBuffer::Select() const
 {
@@ -119,6 +106,25 @@ GL::Texture::Texture(const char* filePath, bool flip180)
 
 	int width, height, bbp;
 	unsigned char* data = stbi_load(filePath, &width, &height, &bbp, 0);
+
+	GiveTextureParams(false);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	free(data);
+}
+GL::Texture::Texture(const std::filesystem::path& filePath, bool flip180) {
+	if (!std::filesystem::exists(filePath) || !std::filesystem::is_directory(filePath))
+		return;
+	
+	glGenTextures(1, &id);
+	glBindTexture(GL_TEXTURE_2D, id);
+
+	stbi_set_flip_vertically_on_load(flip180);
+
+	int width, height, bbp;
+	unsigned char* data = stbi_load(filePath.string().c_str(), &width, &height, &bbp, 0);
 
 	GiveTextureParams(false);
 

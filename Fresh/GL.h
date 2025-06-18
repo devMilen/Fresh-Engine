@@ -11,6 +11,7 @@
 #include <array>
 
 #include <string_view>
+#include <filesystem>
 
 class GL
 {
@@ -28,42 +29,38 @@ public:
 	{
 	public:
 		unsigned int id;
-		VertexBuffer();
-		VertexBuffer(const std::vector<float>& vertices, bool isStatic, 
-			unsigned int location = 0, unsigned int flPerVertex = 2, unsigned int stride = 2 * sizeof(float), void* beginOffset = (void*)0);
 
-		template<size_t size> VertexBuffer(const std::array<float, size>& vertices, bool isStatic,
-			unsigned int location = 0, unsigned int flPerVertex = 2, unsigned int stride = 2 * sizeof(float), void* beginOffset = (void*)0)
-		{
+		VertexBuffer();
+
+		template<typename Container> 
+		inline VertexBuffer(const Container& vertices, bool isStatic) {
+			assert(vertices.size() >= 0 && "vertices container is empty");
+
 			glGenBuffers(1, &id);
 			glBindBuffer(GL_ARRAY_BUFFER, id);
-			glBufferData(GL_ARRAY_BUFFER, size * sizeof(float), vertices.data(), (isStatic) ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
-			AssignPointer(location, flPerVertex, stride, beginOffset);
+			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices.at(0)), vertices.data(), 
+				(isStatic) ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW
+			);
 		}
 
 		void Select() const;
 		void AssignPointer(unsigned int location, unsigned int flPerVertex, unsigned int stride, void* beginOffset) const;
-		template<size_t size> void UpdateData(const std::array<float, size>& newVertices, unsigned int startOffset,
-			unsigned int location = 0, unsigned int flPerVertex = 2, unsigned int stride = 2 * sizeof(float), void* beginOffset = (void*)0) 
-		{
-			glBindBuffer(GL_ARRAY_BUFFER, id);
-			glBufferSubData(GL_ARRAY_BUFFER, startOffset, newVertices.size() * sizeof(float), newVertices.data());
-			AssignPointer(location, flPerVertex, stride, beginOffset);
-		}
 	};
 
 	class IndexBuffer
 	{
 	public:
-		unsigned int id;
+		unsigned int id, size;
 
 		IndexBuffer();
-		IndexBuffer(const std::vector<unsigned int>& indices, bool isStatic);
-		template<size_t size> IndexBuffer(const std::array<unsigned int, size>& indices, bool isStatic)
-		{
+		template <typename Container>
+		inline IndexBuffer(const Container& indices, bool isStatic) {
 			glGenBuffers(1, &id);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * sizeof(float), indices.data(), (isStatic) ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices.at(0)), indices.data(), 
+				(isStatic) ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
+
+			size = indices.size();
 		}
 
 		void Select() const;
@@ -91,6 +88,7 @@ public:
 
 		Texture();
 		Texture(const char* filePath, bool flip180);
+		Texture(const std::filesystem::path& filePath, bool flip180);
 
 		void GiveTextureParams(bool shouldBlurPixels);
 		void Select() const;

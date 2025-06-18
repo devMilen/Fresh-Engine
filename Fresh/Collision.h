@@ -13,9 +13,9 @@
 class F
 {
 	public:
-		float aUp, aDown, b;
+		float aUp, aDown, m_b;
 		F();
-		F(float aUp, float aDown, float b);
+		F(float aUp, float aDown, float m_b);
 
 		float Calc(float x);
 };
@@ -52,7 +52,7 @@ inline Shape::Line LineProjected(const Shape::Def* shape, const Shape::Line& axi
 	{
 		glm::vec2 center = shape->points[0];
 		float centerProjection = glm::dot(center - axisOrigin, axisDir);
-		glm::vec2 res(centerProjection - cir->r, centerProjection + cir->r);
+		glm::vec2 res(centerProjection - cir->m_r, centerProjection + cir->m_r);
 
 		glm::vec2 minPoint = axisOrigin + axisDir * res.x;
 		glm::vec2 maxPoint = axisOrigin + axisDir * res.y;
@@ -86,7 +86,7 @@ inline Shape::Line LineProjected(const Shape::Def* shape, const glm::vec2 P, con
 	{
 		glm::vec2 center = shape->points[0];
 		float centerProjection = glm::dot(center - axisOrigin, axisDir);
-		glm::vec2 res(centerProjection - cir->r, centerProjection + cir->r);
+		glm::vec2 res(centerProjection - cir->m_r, centerProjection + cir->m_r);
 
 		glm::vec2 minPoint = axisOrigin + axisDir * res.x;
 		glm::vec2 maxPoint = axisOrigin + axisDir * res.y;
@@ -119,7 +119,7 @@ inline glm::vec2 Projected(const Shape::Def* shape, const Shape::Line& axis)
 	if (cir) {
 		glm::vec2 center = shape->points[0];
 		float centerProjection = glm::dot(center - axisOrigin, axisDir);
-		return glm::vec2(centerProjection - cir->r, centerProjection + cir->r);
+		return glm::vec2(centerProjection - cir->m_r, centerProjection + cir->m_r);
 	}
 
 	float minProj = FLT_MAX, maxProj = -FLT_MAX;
@@ -145,7 +145,7 @@ inline glm::vec2 Projected(const Shape::Def* shape, const glm::vec2 P, const glm
 	{
 		glm::vec2 center = shape->points[0];
 		float centerProjection = glm::dot(center - axisOrigin, axisDir);
-		return glm::vec2(centerProjection - cir->r, centerProjection + cir->r);
+		return glm::vec2(centerProjection - cir->m_r, centerProjection + cir->m_r);
 	}
 
 	float minProj = FLT_MAX, maxProj = -FLT_MAX;
@@ -177,13 +177,13 @@ inline bool Colliding(const Shape::Def* shape1, const Shape::Def* shape2)
 			glm::vec2 center1 = shape1->points[0];
 			glm::vec2 center2 = shape2->points[0];
 			float distSq = glm::dot(center1 - center2, center1 - center2);
-			float radiusSum = c1->r + c2->r;
+			float radiusSum = c1->m_r + c2->m_r;
 			return distSq <= radiusSum * radiusSum;
 		}
 	}
 
-	auto edgeNormal = [](const glm::vec2& a, const glm::vec2& b) -> glm::vec2 {
-		glm::vec2 edge = b - a;
+	auto edgeNormal = [](const glm::vec2& m_a, const glm::vec2& m_b) -> glm::vec2 {
+		glm::vec2 edge = m_b - m_a;
 		return glm::normalize(glm::vec2(-edge.y, edge.x));
 	};
 
@@ -235,8 +235,8 @@ inline bool Colliding(Shape::Def* shape1, const Transform& tf1, Shape::Def* shap
 
 inline ColInfo CollidingInfo(const Shape::Def* shape1, const Shape::Def* shape2)
 {
-	auto edgeNormal = [](const glm::vec2& a, const glm::vec2& b) -> glm::vec2 {
-		glm::vec2 edge = b - a;
+	auto edgeNormal = [](const glm::vec2& m_a, const glm::vec2& m_b) -> glm::vec2 {
+		glm::vec2 edge = m_b - m_a;
 		return glm::normalize(glm::vec2(-edge.y, edge.x));
 		};
 

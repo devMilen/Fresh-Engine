@@ -45,7 +45,7 @@
 //		std::cout << "),\n";
 //	}
 //	std::cout << "}" << std::endl;
-//	std::cout << "m_indices_size: " << sprite.m_indices_size << std::endl;
+//	std::cout << "m_index_buffer.size: " << sprite.m_index_buffer.size << std::endl;
 //	std::cout << "-------------------END OF: " << name << "-----------------------" << std::endl;
 //
 //}
@@ -57,8 +57,8 @@
 //	std::cout << "mousePos: (" << mousePos.x << ", " << mousePos.y << ')' << std::endl;
 //
 //	std::cout << "isLetterPressed: {" << std::endl;
-//	for (char i = 'a'; i <= 'z'; i++)
-//		if(isLetterPressed[i - 'a'])
+//	for (char i = 'm_a'; i <= 'z'; i++)
+//		if(isLetterPressed[i - 'm_a'])
 //		std::cout << (char)i;
 //	std::cout << "};\n";
 //
@@ -83,8 +83,8 @@
 //	std::cout << "mouse pos: (" << mousePos.x << ", " << mousePos.y << ')' << std::endl;
 //
 //	std::cout << "isLetterPressed: {" << std::endl;
-//	for (char i = 'a'; i <= 'z'; i++)
-//		if (isLetterPressed[i - 'a'])
+//	for (char i = 'm_a'; i <= 'z'; i++)
+//		if (isLetterPressed[i - 'm_a'])
 //			std::cout << (char)i;
 //	std::cout << "};\n";
 //

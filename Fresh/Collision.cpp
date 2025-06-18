@@ -1,11 +1,11 @@
 #include "Collision.h"
 
-F::F() : aUp(1.0f), aDown(1.0f), b(0.0f){}
-F::F(float aUp, float aDown, float y) : aUp(aUp), aDown(aDown), b(b) {}
+F::F() : aUp(1.0f), aDown(1.0f), m_b(0.0f){}
+F::F(float aUp, float aDown, float y) : aUp(aUp), aDown(aDown), m_b(m_b) {}
 
 float F::Calc(float x)
 {
-	return aUp * x / aDown + b;
+	return aUp * x / aDown + m_b;
 }
 
 ColInfo::ColInfo() : isColliding(false), m_dist_z(0.0f), CollNormal(0.0f, 0.0f) {}

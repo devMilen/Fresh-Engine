@@ -28,10 +28,10 @@
 //{
 //	vertices.reserve(16);
 //	vertices.insert(vertices.end(), {
-//		pos.x + w * indexInText,       pos.y,			  1.0f + (text[indexInText] - 'a') % 7 * texW,		1.0f - (text[indexInText] - 'a') / 7 * texH,
-//		pos.x + w * indexInText,       pos.y - h,  1.0f + (text[indexInText] - 'a') % 7 * texW,		1.0f - ((text[indexInText] - 'a') / 7 + 1) * texH,
-//		pos.x + w * (indexInText + 1), pos.y - h,  1.0f + (text[indexInText] - 'a') % 7 * texW + texW,   1.0f - ((text[indexInText] - 'a') / 7 + 1) * texH,
-//		pos.x + w * (indexInText + 1), pos.y,			  1.0f + (text[indexInText] - 'a') % 7 * texW + texW,   1.0f - (text[indexInText] - 'a') / 7 * texH,
+//		pos.x + w * indexInText,       pos.y,			  1.0f + (text[indexInText] - 'm_a') % 7 * texW,		1.0f - (text[indexInText] - 'm_a') / 7 * texH,
+//		pos.x + w * indexInText,       pos.y - h,  1.0f + (text[indexInText] - 'm_a') % 7 * texW,		1.0f - ((text[indexInText] - 'm_a') / 7 + 1) * texH,
+//		pos.x + w * (indexInText + 1), pos.y - h,  1.0f + (text[indexInText] - 'm_a') % 7 * texW + texW,   1.0f - ((text[indexInText] - 'm_a') / 7 + 1) * texH,
+//		pos.x + w * (indexInText + 1), pos.y,			  1.0f + (text[indexInText] - 'm_a') % 7 * texW + texW,   1.0f - (text[indexInText] - 'm_a') / 7 * texH,
 //		});
 //
 //	indices.reserve(6);
@@ -46,10 +46,10 @@
 //
 //	vertices.reserve(16);
 //	vertices.insert(vertices.end(), {
-//		pos.x + w * indexInText,       pos.y,			  1.0f + (text[indexInText] - 'a') % 7 * texW,		1.0f - (text[indexInText] - 'a') / 7 * texH,
-//		pos.x + w * indexInText,       pos.y - h,  1.0f + (text[indexInText] - 'a') % 7 * texW,		1.0f - ((text[indexInText] - 'a') / 7 + 1) * texH,
-//		pos.x + w * (indexInText + 1),   pos.y - h,  1.0f + (text[indexInText] - 'a') % 7 * texW + texW,   1.0f - ((text[indexInText] - 'a') / 7 + 1) * texH,
-//		pos.x + w * (indexInText + 1),	pos.y,			  1.0f + (text[indexInText] - 'a') % 7 * texW + texW,   1.0f - (text[indexInText] - 'a') / 7 * texH,
+//		pos.x + w * indexInText,       pos.y,			  1.0f + (text[indexInText] - 'm_a') % 7 * texW,		1.0f - (text[indexInText] - 'm_a') / 7 * texH,
+//		pos.x + w * indexInText,       pos.y - h,  1.0f + (text[indexInText] - 'm_a') % 7 * texW,		1.0f - ((text[indexInText] - 'm_a') / 7 + 1) * texH,
+//		pos.x + w * (indexInText + 1),   pos.y - h,  1.0f + (text[indexInText] - 'm_a') % 7 * texW + texW,   1.0f - ((text[indexInText] - 'm_a') / 7 + 1) * texH,
+//		pos.x + w * (indexInText + 1),	pos.y,			  1.0f + (text[indexInText] - 'm_a') % 7 * texW + texW,   1.0f - (text[indexInText] - 'm_a') / 7 * texH,
 //		});
 //
 //	indices.reserve(6);
@@ -62,10 +62,10 @@
 //	text[indexInText] = newLetter;
 //
 //	std::vector<float> temp = {
-//		pos.x + w * indexInText,       pos.y,			  1.0f + (text[indexInText] - 'a') % 7 * texW,		1.0f - (text[indexInText] - 'a') / 7 * texH,
-//		pos.x + w * indexInText,       pos.y - h,  1.0f + (text[indexInText] - 'a') % 7 * texW,		1.0f - ((text[indexInText] - 'a') / 7 + 1) * texH,
-//		pos.x + w * (indexInText + 1),   pos.y - h,  1.0f + (text[indexInText] - 'a') % 7 * texW + texW,   1.0f - ((text[indexInText] - 'a') / 7 + 1) * texH,
-//		pos.x + w * (indexInText + 1),	pos.y,			  1.0f + (text[indexInText] - 'a') % 7 * texW + texW,   1.0f - (text[indexInText] - 'a') / 7 * texH,
+//		pos.x + w * indexInText,       pos.y,			  1.0f + (text[indexInText] - 'm_a') % 7 * texW,		1.0f - (text[indexInText] - 'm_a') / 7 * texH,
+//		pos.x + w * indexInText,       pos.y - h,  1.0f + (text[indexInText] - 'm_a') % 7 * texW,		1.0f - ((text[indexInText] - 'm_a') / 7 + 1) * texH,
+//		pos.x + w * (indexInText + 1),   pos.y - h,  1.0f + (text[indexInText] - 'm_a') % 7 * texW + texW,   1.0f - ((text[indexInText] - 'm_a') / 7 + 1) * texH,
+//		pos.x + w * (indexInText + 1),	pos.y,			  1.0f + (text[indexInText] - 'm_a') % 7 * texW + texW,   1.0f - (text[indexInText] - 'm_a') / 7 * texH,
 //	};
 //
 //	for (int i = 0; i < temp.size(); i++)

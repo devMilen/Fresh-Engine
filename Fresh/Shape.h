@@ -166,12 +166,12 @@ public:
 	class Circle : public Def
 	{
 	public:
-		float r;
+		float m_r;
 
 		Circle();
-		Circle(float Ox, float Oy, float r);
-		Circle(float r);
-		Circle(const glm::vec2& O, float r);
+		Circle(float Ox, float Oy, float m_r);
+		Circle(float m_r);
+		Circle(const glm::vec2& O, float m_r);
 
 		const Types Type() const override;
 		const unsigned int pointsSize() const override;

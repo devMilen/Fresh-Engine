@@ -64,7 +64,7 @@ bool Sound::loadWAV(const char* filename, std::vector<char>& buffer, ALenum& for
     char chunkID[4];
     fread(chunkID, 1, 4, file);
     if (std::string(chunkID, 4) != "RIFF") {
-        std::cerr << "Not a valid WAV file" << std::endl;
+        std::cerr << "Not m_a valid WAV file" << std::endl;
         fclose(file);
         return false;
     }
