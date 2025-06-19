@@ -2,10 +2,9 @@
 #include "Transform.h"
 #include "GL.h"
 #include <algorithm> 
+#include <concepts>
 
-//TODO:
-//      add consepts (with requires) to template arguments
-// 
+//TODO: 
 //      finalize Sprite class
 //          test
 //              compare every function with the expected value and go trouhg edge cases
@@ -250,6 +249,17 @@ private:
     };
 };
 
+template <typename T>
+concept DataAndSizeContainer = requires(T t) {
+    { t.size() } -> std::convertible_to<std::size_t>;
+    { t.data() };
+};
+
+template <typename T>
+concept Hitbox = requires(T t) {
+    { std::derived_from<T, Shape::Def> };
+};
+
 class Sprite {
 public:
     enum class Type : unsigned int {
@@ -265,7 +275,7 @@ public:
         Default = 1, Colored = 3, Textured = 7, ColoredCir = 4, ColoredTransformedCir = 5
     };
 
-    template <class VertexContainer, class IndexContainer>
+    template <DataAndSizeContainer VertexContainer, DataAndSizeContainer IndexContainer>
     inline Sprite(const VertexContainer& vertices, const IndexContainer& indices,
         float m_dist_z, bool isStatic,
         const std::string_view& vertexShader, const std::string_view& fragmentShader,
@@ -287,7 +297,7 @@ public:
         );
     }
 
-    template <class VertexContainer>
+    template <DataAndSizeContainer VertexContainer>
     inline Sprite(const VertexContainer& vertices,
         float m_dist_z, bool isStatic,
         const std::string_view& vertexShader, const std::string_view& fragmentShader,
@@ -305,8 +315,8 @@ public:
         );
     }
 
-    template <typename HitBoxType>
-    inline Sprite(Sprite::Type type, const HitBoxType& hitBox, float dist_z, 
+    template <Hitbox HitboxType>
+    inline Sprite(Sprite::Type type, const HitboxType& hitBox, float dist_z, 
         const std::filesystem::path& filePath = std::filesystem::path()
     )
         : m_array_buffer(), m_vertex_buffer(VertexBufferBasedOnType(type, false, hitBox)),
@@ -376,7 +386,7 @@ public:
     void Render(const Color& color, float radius,
         float Ox, float Oy, float donutness = 0, const glm::vec2& scale = glm::vec2(0), float rotation = 0.0f) const;
 
-    template<typename VerticesContainer, typename IndicesContainer>
+    template<DataAndSizeContainer VerticesContainer, DataAndSizeContainer IndicesContainer>
     inline void ReplaceBufferesContents(const VerticesContainer& aVBO, const IndicesContainer& aIBO) const {
         glBindVertexArray(m_array_buffer.id);
 
@@ -387,7 +397,7 @@ public:
         glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, aIBO.size() * sizeof(float), aIBO.data());
     }
 
-    template<typename VerticesContainer, typename IndicesContainer>
+    template<DataAndSizeContainer VerticesContainer, DataAndSizeContainer IndicesContainer>
     inline void ReplaceBuffers(const VerticesContainer& aVBO, const IndicesContainer& aIBO) const {
         glBindVertexArray(m_array_buffer.id);
 
@@ -414,7 +424,7 @@ public:
 
     constexpr const glm::mat4& GetMat() const noexcept { return m_mat; }
 
-    template<typename VerticesContainer>
+    template<DataAndSizeContainer VerticesContainer>
     void SetVertexBufferData(const VerticesContainer& vertices, 
         unsigned int location = 0, unsigned int flPerVertex = 2, 
         unsigned int stride = 2 * sizeof(float), void* beginOffset = (void*)0
@@ -429,7 +439,7 @@ public:
 
     void SetVertexBuffer(unsigned int id);
 
-    template<typename IndicesContainer>
+    template<DataAndSizeContainer IndicesContainer>
     void SetIndexBufferData(const IndicesContainer& indices) const {
         glBindVertexArray(m_array_buffer.id);
 
@@ -471,8 +481,10 @@ private:
     glm::mat4 m_mat;
 
 private:
-    template <typename HitBoxType>
-    static inline GL::VertexBuffer VertexBufferBasedOnType(Type type, float rot90, const HitBoxType& hitbox) {
+    template <Hitbox HitboxType>
+    static inline GL::VertexBuffer VertexBufferBasedOnType(
+        Type type, float rot90, const HitboxType& hitbox
+    ) {
         switch (type) {
         case Type::ColoredLine:
         case Type::ColoredTri:
@@ -499,8 +511,8 @@ private:
         }
     }
 
-    template <typename HitBoxType>
-    static inline GL::IndexBuffer IndexBufferBasedOnType(Type type, const HitBoxType& hitBox) {
+    template <Hitbox HitboxType>
+    static inline GL::IndexBuffer IndexBufferBasedOnType(Type type, const HitboxType& hitBox) {
         switch (type) {
         case Type::ColoredLine:
         case Type::ColoredTri:
@@ -531,25 +543,29 @@ private:
         case Type::StaticColoredLine:
         case Type::StaticColoredTri:
         case Type::StaticColoredShape:
-            return GL::ShaderProgram(s_premade_shaders.at(static_cast<int>(VertexShader::Transformed)),
+            return GL::ShaderProgram(
+                s_premade_shaders.at(static_cast<int>(VertexShader::Transformed)),
                 s_premade_shaders.at(static_cast<int>(FragmentShader::Colored))
             );
 
         case Type::ColoredCircle:
         case Type::StaticColoredCircle:
-            return GL::ShaderProgram(s_premade_shaders.at(static_cast<int>(VertexShader::Transformed)),
+            return GL::ShaderProgram(
+                s_premade_shaders.at(static_cast<int>(VertexShader::Transformed)),
                 s_premade_shaders.at(static_cast<int>(FragmentShader::ColoredCir))
             );
 
         case Type::ColoredTfCir:
         case Type::StaticColoredTfCir:
-            return GL::ShaderProgram(s_premade_shaders.at(static_cast<int>(VertexShader::Transformed)),
+            return GL::ShaderProgram(
+                s_premade_shaders.at(static_cast<int>(VertexShader::Transformed)),
                 s_premade_shaders.at(static_cast<int>(FragmentShader::ColoredTransformedCir))
             );
 
         case Type::Texture:
         case Type::StaticTexture:
-            return GL::ShaderProgram(s_premade_shaders.at(static_cast<int>(VertexShader::Textured)),
+            return GL::ShaderProgram(
+                s_premade_shaders.at(static_cast<int>(VertexShader::Textured)),
                 s_premade_shaders.at(static_cast<int>(FragmentShader::Textured))
             );
 
