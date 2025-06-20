@@ -1,18 +1,27 @@
 #pragma once
 #include "Transform.h"
+#include "Shape.h"
 #include "GL.h"
 #include <algorithm> 
 #include <concepts>
 
+#ifdef _DEBUG
+    #include <iostream>
+#endif //_DEBUG
+
 //TODO: 
+//      optional - add support for textures for none 4 sided polygons 
+//      check what cannot be inherited from immidiately 
+//      SetCoorsToGetImageAt not tested
+// 
 //      finalize Sprite class
-//          test
-//              compare every function with the expected value and go trouhg edge cases
 //          write debugging tools
 //              #ifdef _DEBUG with printing, warnings and asserts
+//          test
+//              compare every function with the expected value and go trough edge cases
 // 
-//      Specialized Sprite classes - Sprite, 
-// BatchSpr, Animation, FBOSpr(with reading pixels for outout from shaders)
+//      Specialized Sprite classes:
+//          DynamicSpr, Animation, FBOSpr(with reading pixels for output from shaders)
 
 class Color {
 public:
@@ -23,47 +32,154 @@ public:
         m_b(std::clamp(b, 0.0f, 1.0f)), m_a(std::clamp(a, 0.0f, 1.0f)) {
     }
 
-    inline constexpr float GetR() const noexcept { return m_r; }
+    _NODISCARD inline constexpr float GetR() const noexcept { return m_r; }
 
-    inline constexpr float GetG() const noexcept { return m_g; }
+    _NODISCARD inline constexpr float GetG() const noexcept { return m_g; }
 
-    inline constexpr float GetB() const noexcept { return m_b; }
+    _NODISCARD inline constexpr float GetB() const noexcept { return m_b; }
 
-    inline constexpr float GetA() const noexcept { return m_a; }
+    _NODISCARD inline constexpr float GetA() const noexcept { return m_a; }
 
     inline constexpr void SetColor(float r, float g, float b, float a) noexcept {
         m_r = r; m_g = g; m_b = b; m_a = a;
+
+#ifdef _DEBUG
+        if (r > 1 || g > 1 || b > 1 || a > 1 ||
+            r < 0 || g < 0 || b < 0 || a < 0
+        ) {
+            std::cout << "[WARNING]: value passed to SetColor(4f) needs normalization" << '\n';
+        }
+#endif //_DEBUG
 
         Normalize();
     }
 
     inline constexpr void SetColor(const Color& color) noexcept {
-        *this = color;
+        m_r = color.m_r; 
+        m_g = color.m_g;
+        m_b = color.m_b;
+        m_a = color.m_a;
+
+#ifdef _DEBUG
+        if (color.m_r > 1 || color.m_g > 1 || color.m_b > 1 || color.m_a > 1 ||
+            color.m_r < 0 || color.m_g < 0 || color.m_b < 0 || color.m_a < 0
+            ) {
+            std::cout << "[WARNING]: value passed to SetColor(const Color&) needs normalization" << '\n';
+        }
+#endif //_DEBUG
 
         Normalize();
     }
 
     inline constexpr void Normalize() noexcept {
         m_r = std::clamp(m_r, 0.0f, 1.0f);
-        m_g = std::clamp(m_b, 0.0f, 1.0f);
+        m_g = std::clamp(m_g, 0.0f, 1.0f);
         m_b = std::clamp(m_b, 0.0f, 1.0f);
         m_a = std::clamp(m_a, 0.0f, 1.0f);
     }
 
-    inline constexpr std::partial_ordering operator<=>(const Color&) const noexcept = default;
+    _NODISCARD inline constexpr bool operator==(const Color& color) const noexcept {
+        return (
+            m_r == color.m_r && 
+            m_g == color.m_g && 
+            m_b == color.m_b && 
+            m_a == color.m_a 
+        );
+    };
+
+    _NODISCARD inline constexpr Color operator*(float scaler) const noexcept {
+        Color res(m_r * scaler, m_g * scaler, m_b * scaler, m_a);
+
+#ifdef _DEBUG
+        if (res.m_r > 1 || res.m_g > 1 || res.m_b > 1 ||
+            res.m_r < 0 || res.m_g < 0 || res.m_b < 0
+            ) {
+            std::cout << "[WARNING]: scaled value needs normalization" << '\n';
+        }
+#endif //_DEBUG
+
+        res.Normalize();
+
+        return res;
+    }
+
+    inline constexpr const Color& operator*=(float scaler) noexcept {
+        m_r *= scaler;
+        m_g *= scaler;
+        m_b *= scaler;
+
+#ifdef _DEBUG
+        if (m_r > 1 || m_g > 1 || m_b > 1 ||
+            m_r < 0 || m_g < 0 || m_b < 0
+            ) {
+            std::cout << "[WARNING]: scaled values need normalization" << '\n';
+        }
+#endif //_DEBUG
+
+        Normalize();
+
+        return *this;
+    }
+
+#ifdef _DEBUG
+    void Print() const;
+
+    static inline constexpr void Test() {
+#pragma warning(push)
+#pragma warning(disable: 4305) //double to float shrunkation for testing
+
+        constexpr Color col1;
+        constexpr Color col2(1.0, 1.0f, 1, 1);
+        constexpr Color col3(-1.0, 10, 0.0003, 1.0f);
+
+        static_assert(col1 == Color(0, 0, 0, 1), "default constructor");
+        static_assert(col2 == Color(1, 1, 1, 1), "basic constructor");
+        static_assert(col3 == Color(0.0f, 1.0f, 0.0003f, 1.0f), "edge constructor");
+
+        static_assert(col3.GetR() == col3.m_r, "getter m_r");
+        static_assert(col3.GetG() == col3.m_g, "getter m_g");
+        static_assert(col3.GetB() == col3.m_b, "getter m_b");
+        static_assert(col3.GetA() == col3.m_a, "getter m_a");
+
+        Color col3Copy1 = col3, col3Copy2 = col3;
+
+        col3Copy1.SetColor(col3Copy1);
+        assert(col3Copy1 == col3Copy2);
+
+        col3Copy1.SetColor(Color(1, 0, 1, 1));
+        assert(col3Copy1 == Color(1, 0, 1, 1) && "color setter");
+
+        col3Copy1.SetColor(1, 0, 0, 1);
+        assert(col3Copy1 == Color(1, 0, 0, 1) && "4f setter");
+
+        col3Copy1.SetColor(Color(-10.0f, 1000000000, 0, 0.00003));
+        assert(col3Copy1 == Color(0, 1, 0, 0.00003f) && "color setter edge");
+
+        col3Copy1.SetColor(0, 0, 0, 0);
+
+        col3Copy1.SetColor(-10.0f, 1000000000, 0, 0.00003);
+        assert(col3Copy1 == Color(0, 1, 0, 0.00003f) && "4f setter edge");
+
+        assert(col3Copy1.GetR() == col3Copy1.m_r && "getter m_r");
+        assert(col3Copy1.GetG() == col3Copy1.m_g && "getter m_g");
+        assert(col3Copy1.GetB() == col3Copy1.m_b && "getter m_b");
+        assert(col3Copy1.GetA() == col3Copy1.m_a && "getter m_a");
+#pragma warning(pop)
+    }
+#endif //_DEBUG
 
 private:
-    float m_r, m_g, m_b, m_a;
+    float m_r = 0.0f, m_g = 0.0f, m_b = 0.0f, m_a = 0.0f;
 };
 
 namespace SpriteColorConstants {
     
-    inline constexpr Color g_RED        = Color(1.0f,  0.0f,  0.0f,  1.0f);                                                       
+    inline constexpr Color g_RED        = Color(1.0f,  0.0f,  0.0f,  1.0f);
     
     inline constexpr Color g_WHITE      = Color(1.0f,  1.0f,  1.0f,  1.0f);                                                   
     
-    inline constexpr Color g_BLUE       = Color(0.0f,  0.0f,  1.0f,  1.0f);                                                       
-    
+    inline constexpr Color g_BLUE       = Color(0.0f,  0.0f,  1.0f,  1.0f); 
+
     inline constexpr Color g_ORANGE     = Color(1.0f,  0.5f,  0.0f,  1.0f);                                                       
     
     inline constexpr Color g_BROWN      = Color(0.6f,  0.3f,  0.0f,  1.0f);
@@ -109,11 +225,11 @@ public:
 
     inline constexpr void Move(float vX, float vY) noexcept { m_x += vX; m_y += vY; }
 
-    inline constexpr const glm::vec2& GetPos() const noexcept { return m_pos; }
+    _NODISCARD inline constexpr const glm::vec2& GetPos() const noexcept { return m_pos; }
 
-    inline constexpr float GetX() const noexcept { return m_x; }
+    _NODISCARD inline constexpr float GetX() const noexcept { return m_x; }
 
-    inline constexpr float GetY() const noexcept { return m_y; }
+    _NODISCARD inline constexpr float GetY() const noexcept { return m_y; }
 
     inline constexpr void SetPos(const glm::vec2& pos) noexcept { m_pos = pos; }
 
@@ -134,13 +250,13 @@ public:
 
     inline constexpr VertexColor(const Color& color) : m_color(color) {}
 
-    inline constexpr float GetR() const noexcept { return m_r; }
+    _NODISCARD inline constexpr float GetR() const noexcept { return m_r; }
 
-    inline constexpr float GetG() const noexcept { return m_g; }
+    _NODISCARD inline constexpr float GetG() const noexcept { return m_g; }
 
-    inline constexpr float GetB() const noexcept { return m_g; }
+    _NODISCARD inline constexpr float GetB() const noexcept { return m_b; }
 
-    inline constexpr float GetA() const noexcept { return m_a; }
+    _NODISCARD inline constexpr float GetA() const noexcept { return m_a; }
 
     inline constexpr void SetColor(float r, float g, float b, float a) noexcept {
         m_color.SetColor(r, g, b, a);
@@ -163,7 +279,7 @@ private:
 
 class VertexTexCoords {
 public:
-    enum class EdgePosRelCenter : unsigned int {
+    enum class EdgePosRelCenter : uint32_t {
         TopLeft = 0, TopRight,
         BottomLeft, BottomRight
     };
@@ -174,34 +290,44 @@ public:
 
     inline constexpr VertexTexCoords(const glm::vec2& texCoords) : m_coords(texCoords) {}
 
-    inline constexpr const glm::vec2& GetCoords() const noexcept { return m_coords; }
+    _NODISCARD inline constexpr const glm::vec2& GetCoords() const noexcept { return m_coords; }
 
-    inline constexpr const float GetCoordU() const noexcept { return m_u; }
+    _NODISCARD inline constexpr const float GetCoordU() const noexcept { return m_u; }
 
-    inline constexpr const float GetCoordV() const noexcept { return m_v; }
+    _NODISCARD inline constexpr const float GetCoordV() const noexcept { return m_v; }
 
     inline constexpr void SetTexCoords(const glm::vec2& coords) noexcept { 
         m_coords = coords;
         
+#ifdef _DEBUG
+        if (m_u > 1 || m_u < 0 || m_v > 1 || m_v < 0)
+            std::cout << "[WARNING]: values passed to SetTexCoords need normalization" << '\n';
+#endif //_DEBUG
+
         Normalize();
     }
 
     inline constexpr void SetTexCoords(float u, float v) noexcept {
         m_u = u; m_v = v;
         
+#ifdef _DEBUG
+        if (m_u > 1 || m_u < 0 || m_v > 1 || m_v < 0)
+            std::cout << "[WARNING]: values passed to SetTexCoords need normalization" << '\n';
+#endif //_DEBUG
+
         Normalize();
     }
 
     inline constexpr void Normalize() noexcept {
-        std::min(std::max(m_u, 0.0f), 1.0f);
-        std::min(std::max(m_v, 0.0f), 1.0f);
+        m_u = std::min(std::max(m_u, 0.0f), 1.0f);
+        m_v = std::min(std::max(m_v, 0.0f), 1.0f);
     }
 
-    void SetCoorsToGetImageAt(unsigned int index, float texWidth, float texHeight, 
+    void SetCoorsToGetImageAt(uint32_t index, float texWidth, float texHeight, 
         float sprWidth, float sprHeight, EdgePosRelCenter vertex
     );
 
-    void SetCoorsToGetImageBoxAt(unsigned int index, const glm::vec2& texSpecs,
+    void SetCoorsToGetImageAt(uint32_t index, const glm::vec2& texSpecs,
         const glm::vec2& sprSpecs, EdgePosRelCenter vertex
     );
 
@@ -228,13 +354,13 @@ public:
         m_x += vX; m_y += vY; m_z += vZ;
     }
 
-    inline constexpr const glm::vec3& GetPos() const noexcept { return m_pos; }
+    _NODISCARD inline constexpr const glm::vec3& GetPos() const noexcept { return m_pos; }
 
-    inline constexpr float GetX() const noexcept { return m_x; }
+    _NODISCARD inline constexpr float GetX() const noexcept { return m_x; }
 
-    inline constexpr float GetY() const noexcept { return m_y; }
+    _NODISCARD inline constexpr float GetY() const noexcept { return m_y; }
 
-    inline constexpr float GetZ() const noexcept { return m_z; }
+    _NODISCARD inline constexpr float GetZ() const noexcept { return m_z; }
 
     inline constexpr void SetPos(const glm::vec3& pos) noexcept { m_pos = pos; }
 
@@ -262,16 +388,16 @@ concept Hitbox = requires(T t) {
 
 class Sprite {
 public:
-    enum class Type : unsigned int {
+    enum class Type : uint32_t {
         None = 0, ColoredLine, ColoredTri, ColoredShape, ColoredCircle, ColoredTfCir, Texture,
         StaticColoredLine, StaticColoredTri, StaticColoredShape, StaticColoredCircle, StaticColoredTfCir, StaticTexture
     };
 
-    enum class VertexShader : unsigned int {
+    enum class VertexShader : uint32_t {
         Default = 0, Transformed = 2, Textured = 6
     };
 
-    enum class FragmentShader : unsigned int {
+    enum class FragmentShader : uint32_t {
         Default = 1, Colored = 3, Textured = 7, ColoredCir = 4, ColoredTransformedCir = 5
     };
 
@@ -282,8 +408,8 @@ public:
         Type type,
         const std::filesystem::path& filePath = std::filesystem::path(), bool flipVerticaly = true,
         const glm::mat4& m_mat = glm::ortho(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT),
-        unsigned int pLoc = 0, unsigned int pflPerVertex = 2, unsigned int pstride = 0, unsigned int pbeginOffset = 0,
-        unsigned int pLoc2 = 0, unsigned int pflPerVertex2 = 2, unsigned int pstride2 = 0, unsigned int pbeginOffset2 = 0
+        uint32_t pLoc = 0, uint32_t pflPerVertex = 2, uint32_t pstride = 0, uint32_t pbeginOffset = 0,
+        uint32_t pLoc2 = 0, uint32_t pflPerVertex2 = 2, uint32_t pstride2 = 0, uint32_t pbeginOffset2 = 0
     )
         : m_array_buffer(), m_vertex_buffer(vertices, isStatic), m_dist_z(m_dist_z), m_index_buffer(indices, isStatic),
         m_shader_program(vertexShader, fragmentShader), m_texture(filePath, flipVerticaly), m_mat(m_mat)
@@ -304,7 +430,7 @@ public:
         Type type,
         const std::filesystem::path& filePath = std::filesystem::path(), bool flipVerticaly = true,
         const glm::mat4& m_mat = glm::ortho(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT),
-        unsigned int pLoc = 0, unsigned int pflPerVertex = 2, unsigned int pstride = 0, unsigned int pbeginOffset = 0
+        uint32_t pLoc = 0, uint32_t pflPerVertex = 2, uint32_t pstride = 0, uint32_t pbeginOffset = 0
     )
         : m_array_buffer(), m_vertex_buffer(vertices, isStatic), m_dist_z(m_dist_z),
         m_shader_program(vertexShader, fragmentShader), m_texture(filePath, flipVerticaly),
@@ -391,10 +517,10 @@ public:
         glBindVertexArray(m_array_buffer.id);
 
         glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer.id);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, aVBO.size() * sizeof(float), aVBO.data());
+        glBufferSubData(GL_ARRAY_BUFFER, 0, aVBO.size() * sizeof(aVBO.at(0)), aVBO.data());
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer.id);
-        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, aIBO.size() * sizeof(float), aIBO.data());
+        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, aIBO.size() * sizeof(aIBO.at(0)), aIBO.data());
     }
 
     template<DataAndSizeContainer VerticesContainer, DataAndSizeContainer IndicesContainer>
@@ -402,60 +528,64 @@ public:
         glBindVertexArray(m_array_buffer.id);
 
         glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer.id);
-        glBufferData(GL_ARRAY_BUFFER, aVBO.size() * sizeof(float), aVBO.data(), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, aVBO.size() * sizeof(aVBO.at(0)), aVBO.data(), GL_DYNAMIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer.id);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, aIBO.size() * sizeof(unsigned int), aIBO.data(), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, aIBO.size() * sizeof(aIBO.at(0)), aIBO.data(), GL_DYNAMIC_DRAW);
     }
 
-    constexpr const GL::ArrayBuffer& GetArrayBuffer() const noexcept { return m_array_buffer; }
+    _NODISCARD constexpr const GL::ArrayBuffer& GetArrayBuffer() const noexcept { return m_array_buffer; }
 
-    constexpr const GL::VertexBuffer& GetVertexBuffer() const noexcept { return m_vertex_buffer; }
+    _NODISCARD constexpr const GL::VertexBuffer& GetVertexBuffer() const noexcept { return m_vertex_buffer; }
 
-    constexpr const GL::IndexBuffer& GetIndexBuffer() const noexcept { return m_index_buffer; }
+    _NODISCARD constexpr const GL::IndexBuffer& GetIndexBuffer() const noexcept { return m_index_buffer; }
 
-    constexpr unsigned int GetIndicesSize() const noexcept { return m_index_buffer.size; }
+    _NODISCARD constexpr uint32_t GetIndicesSize() const noexcept { return m_index_buffer.size; }
 
-    constexpr const GL::ShaderProgram& GetShaderProgram() const noexcept { return m_shader_program; }
+    _NODISCARD constexpr const GL::ShaderProgram& GetShaderProgram() const noexcept { return m_shader_program; }
 
-    constexpr const GL::Texture& GetTexture() const noexcept { return m_texture; }
+    _NODISCARD constexpr const GL::Texture& GetTexture() const noexcept { return m_texture; }
 
-    constexpr float GetDistZ() const noexcept { return m_dist_z; }
+    _NODISCARD constexpr float GetDistZ() const noexcept { return m_dist_z; }
 
-    constexpr const glm::mat4& GetMat() const noexcept { return m_mat; }
+    _NODISCARD constexpr const glm::mat4& GetMat() const noexcept { return m_mat; }
 
     template<DataAndSizeContainer VerticesContainer>
     void SetVertexBufferData(const VerticesContainer& vertices, 
-        unsigned int location = 0, unsigned int flPerVertex = 2, 
-        unsigned int stride = 2 * sizeof(float), void* beginOffset = (void*)0
+        uint32_t location = 0, uint32_t flPerVertex = 2, 
+        uint32_t stride = 2 * sizeof(float), void* beginOffset = (void*)0
     ) const {
         glBindVertexArray(m_array_buffer.id);
 
         glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer.id);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices.at(0)), 
+            vertices.data(), GL_DYNAMIC_DRAW
+        );
 
         m_vertex_buffer.AssignPointer(location, flPerVertex, stride, beginOffset);
     }
 
-    void SetVertexBuffer(unsigned int id);
+    void SetVertexBuffer(uint32_t id);
 
     template<DataAndSizeContainer IndicesContainer>
     void SetIndexBufferData(const IndicesContainer& indices) const {
         glBindVertexArray(m_array_buffer.id);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer.id);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices.at(0)), 
+            indices.data(), GL_DYNAMIC_DRAW
+        );
     }
 
-    void SetIndexBuffer(unsigned int id);
+    void SetIndexBuffer(uint32_t id);
 
     void SetNewShaders(const std::string_view& vertexShader, const std::string_view& frammentShader);
 
-    void SetShaderProgram(unsigned int id);
+    void SetShaderProgram(uint32_t id);
 
     void SetNewTexture(const std::string_view& filePath, bool flip180);
 
-    void SetTexture(unsigned int id);
+    void SetTexture(uint32_t id);
 
     void SetDistZ(float distZ);
 
@@ -469,6 +599,48 @@ public:
 
     void FreeGPUMemory() const;
 
+    _NODISCARD static std::array<float, 4> VerticesFor(const Shape::Line& line) noexcept;
+
+    _NODISCARD static std::array<float, 6> VerticesFor(const Shape::Triangle& triangle) noexcept;
+
+    _NODISCARD static std::array<float, 8> VerticesFor(const Shape::Box& box) noexcept;
+
+    _NODISCARD static std::array<float, 8> VerticesFor(const Shape::AABB& aabb) noexcept;
+
+    _NODISCARD static std::array<float, 10> VerticesFor(const Shape::Pentagon& pentagon) noexcept;
+
+    _NODISCARD static std::array<float, 12> VerticesFor(const Shape::Hexagon& hexagon) noexcept;
+
+    _NODISCARD static std::vector<float> VerticesFor(const Shape::Polygon& poly) noexcept;
+
+    _NODISCARD static std::array<float, 8> VerticesFor(const Shape::Circle& cir) noexcept;
+
+    _NODISCARD static std::array<float, 4> VerticesFor(const Shape::Line& line, bool rot90) noexcept;
+    
+    _NODISCARD static std::array<float, 6> VerticesFor(const Shape::Triangle& triangle, bool rot90) noexcept;
+    
+    _NODISCARD static std::array<float, 16> VerticesFor(const Shape::Box& box, bool rot90) noexcept;
+    
+    _NODISCARD static std::array<float, 16> VerticesFor(const Shape::AABB& aabb, bool rot90) noexcept;
+    
+    _NODISCARD static std::array<float, 10> VerticesFor(const Shape::Pentagon& pentagon, bool rot90) noexcept;
+    
+    _NODISCARD static std::array<float, 12> VerticesFor(const Shape::Hexagon& hexagon, bool rot90) noexcept;
+    
+    _NODISCARD static std::vector<float> VerticesFor(const Shape::Polygon& poly, bool rot90) noexcept;
+    
+    _NODISCARD static std::array<float, 8> VerticesFor(const Shape::Circle& cir, bool rot90) noexcept;
+
+    _NODISCARD static std::array<uint32_t, 6> IndicesFor(const Shape::Box& box) noexcept;
+
+    _NODISCARD static std::array<uint32_t, 6> IndicesFor(const Shape::AABB& aabb) noexcept;
+
+    _NODISCARD static std::array<uint32_t, 9> IndicesFor(const Shape::Pentagon& pentagon) noexcept;
+
+    _NODISCARD static std::array<uint32_t, 12> IndicesFor(const Shape::Hexagon& hexagon) noexcept;
+
+    _NODISCARD static std::array<uint32_t, 6> IndicesFor(const Shape::Circle& cir) noexcept;
+
 private:
     GL::ArrayBuffer m_array_buffer;
     GL::VertexBuffer m_vertex_buffer;
@@ -477,106 +649,11 @@ private:
     GL::ShaderProgram m_shader_program;
     GL::Texture m_texture;
 
-    float m_dist_z;
-    glm::mat4 m_mat;
+    float m_dist_z = 0.0f;
+    glm::mat4 m_mat = glm::mat4(1.0f);;
 
-private:
-    template <Hitbox HitboxType>
-    static inline GL::VertexBuffer VertexBufferBasedOnType(
-        Type type, float rot90, const HitboxType& hitbox
-    ) {
-        switch (type) {
-        case Type::ColoredLine:
-        case Type::ColoredTri:
-        case Type::ColoredShape:
-        case Type::ColoredCircle:
-        case Type::ColoredTfCir:
-            return GL::VertexBuffer(Transform::VerticesFor(hitbox), false);
-
-        case Type::StaticColoredLine:
-        case Type::StaticColoredTri:
-        case Type::StaticColoredShape:
-        case Type::StaticColoredCircle:
-        case Type::StaticColoredTfCir:
-            return GL::VertexBuffer(Transform::VerticesFor(hitbox), true);
-
-        case Type::Texture:
-            return GL::VertexBuffer(Transform::VerticesFor(hitbox, rot90), false);
-
-        case Type::StaticTexture:
-            return GL::VertexBuffer(Transform::VerticesFor(hitbox, rot90), true);
-
-        default:
-            assert(false && "construction of sprite type none or unknown");
-        }
-    }
-
-    template <Hitbox HitboxType>
-    static inline GL::IndexBuffer IndexBufferBasedOnType(Type type, const HitboxType& hitBox) {
-        switch (type) {
-        case Type::ColoredLine:
-        case Type::ColoredTri:
-        case Type::ColoredShape:
-        case Type::ColoredCircle:
-        case Type::ColoredTfCir:
-        case Type::Texture:
-            return GL::IndexBuffer(Transform::IndicesFor(hitBox), false);
-
-        case Type::StaticColoredLine:
-        case Type::StaticColoredTri:
-        case Type::StaticColoredShape:
-        case Type::StaticColoredCircle:
-        case Type::StaticColoredTfCir:
-        case Type::StaticTexture:
-            return GL::IndexBuffer(Transform::IndicesFor(hitBox), true);
-
-        default:
-            assert(!"construction of sprite type none or unknown");
-        }
-    }
-
-    static inline GL::ShaderProgram ShaderProgramBasedOnType(Type type) {
-        switch (type) {
-        case Type::ColoredLine:
-        case Type::ColoredTri:
-        case Type::ColoredShape:
-        case Type::StaticColoredLine:
-        case Type::StaticColoredTri:
-        case Type::StaticColoredShape:
-            return GL::ShaderProgram(
-                s_premade_shaders.at(static_cast<int>(VertexShader::Transformed)),
-                s_premade_shaders.at(static_cast<int>(FragmentShader::Colored))
-            );
-
-        case Type::ColoredCircle:
-        case Type::StaticColoredCircle:
-            return GL::ShaderProgram(
-                s_premade_shaders.at(static_cast<int>(VertexShader::Transformed)),
-                s_premade_shaders.at(static_cast<int>(FragmentShader::ColoredCir))
-            );
-
-        case Type::ColoredTfCir:
-        case Type::StaticColoredTfCir:
-            return GL::ShaderProgram(
-                s_premade_shaders.at(static_cast<int>(VertexShader::Transformed)),
-                s_premade_shaders.at(static_cast<int>(FragmentShader::ColoredTransformedCir))
-            );
-
-        case Type::Texture:
-        case Type::StaticTexture:
-            return GL::ShaderProgram(
-                s_premade_shaders.at(static_cast<int>(VertexShader::Textured)),
-                s_premade_shaders.at(static_cast<int>(FragmentShader::Textured))
-            );
-
-        default:
-            assert(false && "construction of sprite type none or unknown");
-        }
-    }
-
-private:
     static inline constexpr const std::array<std::string_view, 8> s_premade_shaders = {
-        std::string_view(R"(
+    std::string_view(R"(
             #version 330 core
             layout(location = 0) in vec2 pos;       
             uniform float m_dist_z;
@@ -693,4 +770,118 @@ private:
             })"
         ),
     };
+
+
+private:
+    template <Hitbox HitboxType>
+    static inline GL::VertexBuffer VertexBufferBasedOnType(
+        Type type, float rot90, const HitboxType& hitbox
+    ) {
+        switch (type) {
+        case Type::ColoredLine:
+        case Type::ColoredTri:
+        case Type::ColoredShape:
+        case Type::ColoredCircle:
+        case Type::ColoredTfCir:
+            return GL::VertexBuffer(VerticesFor(hitbox), false);
+
+        case Type::StaticColoredLine:
+        case Type::StaticColoredTri:
+        case Type::StaticColoredShape:
+        case Type::StaticColoredCircle:
+        case Type::StaticColoredTfCir:
+            return GL::VertexBuffer(VerticesFor(hitbox), true);
+
+        case Type::Texture:
+
+            assert(hitbox.Type() == Shape::Types::ShapeAABB || hitbox.Type() == Shape::Types::ShapeBox &&
+                "currently supprorted texture vertices for Shape::Box and Shape::AABB");
+
+            return GL::VertexBuffer(VerticesFor(hitbox, rot90), false);
+
+        case Type::StaticTexture:
+
+            assert(hitbox.Type() == Shape::Types::ShapeAABB || hitbox.Type() == Shape::Types::ShapeBox &&
+                "currently supprorted texture vertices for Shape::Box and Shape::AABB");
+
+            return GL::VertexBuffer(VerticesFor(hitbox, rot90), true);
+
+        default:
+            assert(!"construction of sprite type none or unknown");
+            GL::VertexBuffer nullBuffer;
+            nullBuffer.id = -1;
+            return nullBuffer;
+        }
+    }
+
+    template <Hitbox HitboxType>
+    static inline GL::IndexBuffer IndexBufferBasedOnType(Type type, const HitboxType& hitBox) {
+        switch (type) {
+        case Type::ColoredLine:
+        case Type::ColoredTri:
+        case Type::ColoredShape:
+        case Type::ColoredCircle:
+        case Type::ColoredTfCir:
+        case Type::Texture:
+            return GL::IndexBuffer(IndicesFor(hitBox), false);
+
+        case Type::StaticColoredLine:
+        case Type::StaticColoredTri:
+        case Type::StaticColoredShape:
+        case Type::StaticColoredCircle:
+        case Type::StaticColoredTfCir:
+        case Type::StaticTexture:
+            return GL::IndexBuffer(IndicesFor(hitBox), true);
+
+        default:
+            assert(!"construction of sprite type none or unknown");
+            GL::IndexBuffer nullBuffer;
+            nullBuffer.id = -1;
+            return nullBuffer;
+        }
+    }
+    
+    static inline GL::ShaderProgram ShaderProgramBasedOnType(Type type) {
+        switch (type) {
+        case Type::ColoredLine:
+        case Type::ColoredTri:
+        case Type::ColoredShape:
+        case Type::StaticColoredLine:
+        case Type::StaticColoredTri:
+        case Type::StaticColoredShape:
+            return GL::ShaderProgram(
+                s_premade_shaders.at(static_cast<int32_t>(VertexShader::Transformed)),
+                s_premade_shaders.at(static_cast<int32_t>(FragmentShader::Colored))
+            );
+
+        case Type::ColoredCircle:
+        case Type::StaticColoredCircle:
+            return GL::ShaderProgram(
+                s_premade_shaders.at(static_cast<int32_t>(VertexShader::Transformed)),
+                s_premade_shaders.at(static_cast<int32_t>(FragmentShader::ColoredCir))
+            );
+
+        case Type::ColoredTfCir:
+        case Type::StaticColoredTfCir:
+            return GL::ShaderProgram(
+                s_premade_shaders.at(static_cast<int32_t>(VertexShader::Transformed)),
+                s_premade_shaders.at(static_cast<int32_t>(FragmentShader::ColoredTransformedCir))
+            );
+
+        case Type::Texture:
+        case Type::StaticTexture:
+            return GL::ShaderProgram(
+                s_premade_shaders.at(static_cast<int32_t>(VertexShader::Textured)),
+                s_premade_shaders.at(static_cast<int32_t>(FragmentShader::Textured))
+            );
+
+        default:
+            assert(!"construction of sprite type none or unknown");
+            return GL::ShaderProgram("", "");
+        }
+    }
+};
+
+class DynamicSprite  : public Sprite {
+
 };

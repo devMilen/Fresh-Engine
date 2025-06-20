@@ -59,18 +59,21 @@ GL::ShaderProgram::ShaderProgram(const std::string_view& vertexShader, const std
 	: ShaderProgram(vertexShader.data(), fragmentShader.data()) {
 }
 
-bool GL::ShaderProgram::HaveShadersCompiled(unsigned int shaderidToCheck)
+bool GL::ShaderProgram::HaveShadersCompiled(unsigned int shaderToCheck)
 {
 	int  success; 
+	glGetShaderiv(shaderToCheck, GL_COMPILE_STATUS, &success);
+	
+#ifdef _DEBUG
 	char infoLog[512]; 
-	glGetShaderiv(shaderidToCheck, GL_COMPILE_STATUS, &success);
-	return success;
+	if (!success)
+	{
+		glGetShaderInfoLog(shaderToCheck, 512, NULL, infoLog); 
+		std::cout << "ERROR - Shader did NOT compile: " << infoLog << std::endl; 
+	}
+#endif //_DEBUG
 
-	//if (!success)
-	//{
-	//	glGetShaderInfoLog(shaderToCheck, 512, NULL, infoLog); 
-	//	std::cout << "ERROR - Shader did NOT compile: " << infoLog << std::endl; 
-	//}
+	return success;
 }
 
 unsigned int GL::ShaderProgram::ULocOf(const char* Uname) const

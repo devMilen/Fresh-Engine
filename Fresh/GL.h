@@ -28,7 +28,7 @@ public:
 	class VertexBuffer
 	{
 	public:
-		unsigned int id;
+		unsigned int id = 0;
 
 		VertexBuffer();
 
@@ -50,7 +50,7 @@ public:
 	class IndexBuffer
 	{
 	public:
-		unsigned int id, size;
+		unsigned int id = 0, size = 0;
 
 		IndexBuffer();
 		template <typename Container>
@@ -60,7 +60,7 @@ public:
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices.at(0)), indices.data(), 
 				(isStatic) ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
 
-			size = indices.size();
+			size = static_cast<unsigned int>(indices.size());
 		}
 
 		void Select() const;
@@ -69,7 +69,7 @@ public:
 	class ShaderProgram
 	{
 	public:
-		unsigned int id;
+		unsigned int id = 0;
 
 		ShaderProgram();
 		ShaderProgram(const char* vertexShader, const char* fragmentShader);
@@ -84,7 +84,7 @@ public:
 	class Texture
 	{
 	public:
-		unsigned int id;
+		unsigned int id = 0;
 
 		Texture();
 		Texture(const char* filePath, bool flip180);
@@ -92,17 +92,7 @@ public:
 
 		void GiveTextureParams(bool shouldBlurPixels);
 		void Select() const;
-#pragma region defReadPositions
-#define POSITIONS_1    0.0f, 1.0f,
-#define POSITIONS_2    1.0f, 1.0f,
-#define POSITIONS_2_90 0.0f, 0.0f,
-#define POSITIONS_3    1.0f, 0.0f,
-#define POSITIONS_4    1.0f, 0.0f,
-#define POSITIONS_5    0.0f, 0.0f,
-#define POSITIONS_5_90 1.0f, 1.0f,
-#define POSITIONS_6    0.0f, 1.0f
 
 #define VBO_ARGS 0, 2, 4, 0, 1, 2, 4, 2
-#pragma endregion
 	};
 };
